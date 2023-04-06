@@ -1,14 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="466d7ca1-e518-406b-97e3-57fce278f640" name="Changes" comment="" />
+    <list default="true" id="466d7ca1-e518-406b-97e3-57fce278f640" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Scripts/ClientModels/RandomClient.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Scripts/ClientModels/TestClient.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Utilities/Utilities.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI-Java.iml" beforeDir="false" afterPath="$PROJECT_DIR$/AI-Java.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/TestClient.java" beforeDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
   </component>
   <component name="ProjectId" id="2O399FFjeMVhjeU8EQevjgrOW8l" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
@@ -19,9 +37,40 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true"
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "last_opened_file_path": "H:/Documents/AI/AI-Java/libary/loki.jar",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.0"
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="H:\Documents\AI\AI-Java\src" />
+      <recent name="H:\Documents\AI\AI-Java\Scripts" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Application.Clients">
+    <configuration name="Clients" type="Application" factoryName="Application" singleton="false">
+      <option name="MAIN_CLASS_NAME" value="Scripts.ClientModels.RandomClient" />
+      <module name="AI-Java" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ServerStart" type="JarApplication">
+      <option name="JAR_PATH" value="$PROJECT_DIR$/libary/loki.jar" />
+      <option name="VM_PARAMETERS" value="-Djava.library.path=libary/lib/native" />
+      <option name="WORKING_DIRECTORY" value="H:\Documents\AI\AI-Java" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Application.Clients" />
+      <item itemvalue="JAR Application.ServerStart" />
+    </list>
+  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -32,5 +81,16 @@
       <updated>1680778245893</updated>
     </task>
     <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
 </project>
