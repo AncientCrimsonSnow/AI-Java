@@ -1,24 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="466d7ca1-e518-406b-97e3-57fce278f640" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Scripts/ClientModels/RandomClient.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Scripts/ClientModels/TestClient.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Utilities/Utilities.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Utilities/Board.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Utilities/Occupation.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Utilities/PlayerNumber.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Utilities/TileNeighbourHelper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI-Java.iml" beforeDir="false" afterPath="$PROJECT_DIR$/AI-Java.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/TestClient.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Assets/ahegoe.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/Assets/ahegoe.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Scripts/ClientModels/RandomClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Scripts/ClientModels/RandomClient.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Utilities/Utilities.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Utilities/Utilities.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="CodeInsightWorkspaceSettings">
+    <option name="optimizeImportsOnTheFly" value="true" />
+  </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Class" />
+        <option value="Enum" />
       </list>
     </option>
   </component>
@@ -34,17 +43,24 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "last_opened_file_path": "H:/Documents/AI/AI-Java/libary/loki.jar",
-    "project.structure.last.edited": "Modules",
-    "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.0"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;last_opened_file_path&quot;: &quot;H:/Documents/AI/AI-Java/libary/loki.jar&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.keymap&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="H:\Documents\AI\AI-Java\src" />
@@ -62,7 +78,7 @@
     <configuration name="ServerStart" type="JarApplication">
       <option name="JAR_PATH" value="$PROJECT_DIR$/libary/loki.jar" />
       <option name="VM_PARAMETERS" value="-Djava.library.path=libary/lib/native" />
-      <option name="WORKING_DIRECTORY" value="H:\Documents\AI\AI-Java" />
+      <option name="WORKING_DIRECTORY" value="C:\Users\juriw\IdeaProjects\AI-Java" />
       <option name="ALTERNATIVE_JRE_PATH" />
       <method v="2" />
     </configuration>
@@ -79,8 +95,18 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1680778245893</updated>
+      <workItem from="1680876622907" duration="56000" />
+      <workItem from="1680876686010" duration="15000" />
+      <workItem from="1680876735127" duration="2139000" />
+      <workItem from="1680911986744" duration="3130000" />
+      <workItem from="1680951434432" duration="5727000" />
+      <workItem from="1681031920138" duration="2464000" />
+      <workItem from="1681054783387" duration="72000" />
     </task>
     <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
