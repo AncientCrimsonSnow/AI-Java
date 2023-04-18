@@ -3,12 +3,32 @@ package Utilities;
 
 import lenz.htw.loki.Move;
 
+import java.util.Set;
+import java.util.TreeSet;
+
 public class Board {
     private PlayerNumber[] _board;
     private PlayerNumber _perspective;
 
+    private int[] _perspectiveMap;
+
     public Board(PlayerNumber perspective) {
+
         _perspective = perspective;
+
+        if(_perspective == PlayerNumber.Player0)
+            _perspectiveMap = _player0PerspectiveMap;
+        else if(_perspective == PlayerNumber.Player1)
+            _perspectiveMap = _player1PerspectiveMap;
+        else if(_perspective == PlayerNumber.Player2)
+            _perspectiveMap = _player2PerspectiveMap;
+
+    }
+
+    private PlayerNumber[] GetStartBoard(){
+        return new PlayerNumber[]{
+
+        };
     }
 
     public Move[] UpdateBoardAndGetValidMoves(Move move){
@@ -21,7 +41,31 @@ public class Board {
     }
 
     private Move[] GetValidMoves(){
-        return new Move[100];
+        var neighbourTiles = GetAllNeighboursBoardIndices();
+
+
+        return new Move[]{
+                new Move(0,0,0),
+        };
+    }
+
+    private Set<Integer> GetAllNeighboursBoardIndices(){
+        var result = new TreeSet<Integer>();
+        for(var i = 0; i != _board.length; i++){
+            if(_board[i] == PlayerNumber.Player0){
+                var neighbours = _neighbourMap[i];
+                result.add(neighbours.neighbour1);
+                result.add(neighbours.neighbour2);
+                result.add(neighbours.neighbour3);
+            }
+        }
+        return result;
+    }
+
+    public Move GetBestMove(){
+        var validMoves = GetValidMoves();
+        return validMoves[0];
+
     }
 
 
@@ -40,6 +84,15 @@ public class Board {
                     8, 14, 13, 21, 20, 30, 29,
                 3, 7, 6, 12, 11, 19, 18,  28,  27,
             0, 2, 1, 5, 4, 10, 9,  17,  16,  26,  25
+    };
+
+    private static final int[] _player0PerspectiveMap = {
+                                0,
+                            1,  2,  3,
+                        4,  5,  6,  7,  8,
+                    9,  10, 11, 12, 13, 14, 15,
+                16, 17, 18, 19, 20, 21, 22, 23, 24,
+            25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35
     };
 
     public static final TileNeighbourHelper _neighbourMap[] = {
