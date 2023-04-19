@@ -4,7 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="466d7ca1-e518-406b-97e3-57fce278f640" name="Changes" comment="" />
+    <list default="true" id="466d7ca1-e518-406b-97e3-57fce278f640" name="Changes" comment="Adding some basics">
+      <change afterPath="$PROJECT_DIR$/src/Utilities/DirectedGraph.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Utilities/TileOccupation.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Scripts/ClientModels/RandomClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Scripts/ClientModels/RandomClient.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Utilities/Board.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Utilities/Board.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Utilities/PlayerNumber.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Utilities/PlayerNumber.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Utilities/TileNeighbourHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Utilities/TileNeighbourHelper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Utilities/Utilities.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Utilities/Utilities.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -113,6 +122,14 @@
       <workItem from="1681031920138" duration="2464000" />
       <workItem from="1681054783387" duration="72000" />
     </task>
+    <task id="LOCAL-00001" summary="Adding some basics">
+      <created>1681919191419</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1681919191419</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -128,5 +145,9 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Adding some basics" />
+    <option name="LAST_COMMIT_MESSAGE" value="Adding some basics" />
   </component>
 </project>

@@ -3,73 +3,122 @@ package Utilities;
 
 import lenz.htw.loki.Move;
 
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.ArrayList;
+import java.util.Map;
 
 public class Board {
-    private PlayerNumber[] _board;
+    private TileOccupation[] _board;
     private PlayerNumber _perspective;
 
-    private int[] _perspectiveMap;
+    private int[] _perspectiveMapOut;
+    private int[] _perspectiveMapIn;
 
     public Board(PlayerNumber perspective) {
 
         _perspective = perspective;
 
-        if(_perspective == PlayerNumber.Player0)
-            _perspectiveMap = _player0PerspectiveMap;
-        else if(_perspective == PlayerNumber.Player1)
-            _perspectiveMap = _player1PerspectiveMap;
-        else if(_perspective == PlayerNumber.Player2)
-            _perspectiveMap = _player2PerspectiveMap;
-
+        switch (_perspective) {
+            case p0:
+                _perspectiveMapIn = PLAYER_0_PERSPECTIVE_MAP;
+                _perspectiveMapOut = PLAYER_0_PERSPECTIVE_MAP;
+                break;
+            case p1:
+                _perspectiveMapIn = PLAYER_2_PERSPECTIVE_MAP;
+                _perspectiveMapOut = PLAYER_1_PERSPECTIVE_MAP;
+                break;
+            case p2:
+                _perspectiveMapIn = PLAYER_1_PERSPECTIVE_MAP;
+                _perspectiveMapOut = PLAYER_2_PERSPECTIVE_MAP;
+        }
+        _board = GetStartBoard();
     }
 
-    private PlayerNumber[] GetStartBoard(){
-        return new PlayerNumber[]{
+    public void UpdateBoard(Move move){
+        move = new Move(_perspectiveMapIn[move.from], _perspectiveMapIn[move.to], _perspectiveMapIn[move.push]);
 
-        };
+        var movedFrom = _board[move.from];
+        var movedTo = _board[move.to];
+
+        _board[move.from] = TileOccupation.none;
+
+        var other2Players = OTHER_PLAYERS.get(movedFrom);
+
+        if(movedTo == other2Players[0] || movedTo == other2Players[1]){
+            _board[move.push] = movedTo;
+        }
+        _board[move.to] = movedFrom;
     }
 
-    public Move[] UpdateBoardAndGetValidMoves(Move move){
-        UpdateBoard(move);
-        return GetValidMoves();
-    }
-
-    private void UpdateBoard(Move move){
-
-    }
-
-    private Move[] GetValidMoves(){
-        var neighbourTiles = GetAllNeighboursBoardIndices();
-
-
-        return new Move[]{
-                new Move(0,0,0),
-        };
-    }
-
-    private Set<Integer> GetAllNeighboursBoardIndices(){
-        var result = new TreeSet<Integer>();
+    private ArrayList<Move> GetValidMoves(){
+        var result = new ArrayList<Move>();
         for(var i = 0; i != _board.length; i++){
-            if(_board[i] == PlayerNumber.Player0){
-                var neighbours = _neighbourMap[i];
-                result.add(neighbours.neighbour1);
-                result.add(neighbours.neighbour2);
-                result.add(neighbours.neighbour3);
+            var tile = _board[i];
+            if(tile == TileOccupation.p0){
+                var neighbours = NEIGHBOUR_MAP[i];
+                for (var neighbour: neighbours.neighbours) {
+                    if(neighbour >= 0)
+                        if(_board[neighbour] != TileOccupation.p0)
+                            if(TileHasMyNeighbours(i, neighbour))
+                                result.addAll(GenerateMoves(i, neighbour));
+                }
             }
         }
         return result;
     }
 
-    public Move GetBestMove(){
-        var validMoves = GetValidMoves();
-        return validMoves[0];
+    private Boolean TileHasMyNeighbours(int from, int tile){
+        var neighbours = NEIGHBOUR_MAP[tile];
+        for (var neighbour: neighbours.neighbours) {
+            if(neighbour >= 0)
+                if(neighbour != from && _board[neighbour] == TileOccupation.p0)
+                    return true;
+        }
+        return false;
+    }
 
+    private ArrayList<Move> GenerateMoves(int from, int to){
+        if(_board[to] == TileOccupation.p1 || _board[to] == TileOccupation.p2){
+            var result = new ArrayList<Move>();
+            result.add(new Move(from, to, from));
+
+            var neighbours = NEIGHBOUR_MAP[to];
+            for(var i = 0; i != neighbours.neighbours.length; i++){
+                if(neighbours.neighbours[i] >= 0)
+                    result.add(new Move(from, to, neighbours.neighbours[i]));
+            }
+            return result;
+        }
+        var result = new ArrayList<Move>();
+        result.add(new Move(from, to, 0));
+        return result;
     }
 
 
-    private static final int[] _player1PerspectiveMap = {
+    public Move GetBestMove(){
+        var validMoves = GetValidMoves();
+        var result = validMoves.get(Utilities.RandomInt(0, validMoves.size()));
+        return new Move(_perspectiveMapOut[result.from], _perspectiveMapOut[result.to], _perspectiveMapOut[result.push]);
+    }
+
+    private static TileOccupation[] GetStartBoard(){
+        var o = TileOccupation.none;
+        var p0 = TileOccupation.p0;
+        var p1 = TileOccupation.p1;
+        var p2 = TileOccupation.p2;
+
+        return new TileOccupation[]{
+                                    p0,
+                                p0, p0, p0,
+                            o,  o,  o,  o,  o,
+                        o,  o,  o,  o,  o,  o,  o,
+                    p1, o,  o,  o,  o,  o,  o,  o,  p2,
+                p1, p1, p1, o,  o,  o,  o,  o,  p2, p2, p2
+        };
+    }
+
+
+
+    private static final int[] PLAYER_1_PERSPECTIVE_MAP = {
                                 25,
                             27, 26, 16,
                         29, 28, 18, 17, 9,
@@ -77,7 +126,7 @@ public class Board {
                 33, 32, 22, 21, 13, 12, 6,  5,  1,
             35, 34, 24, 23, 15, 14, 8,  7,  3,  2,  0
     };
-    private static final int[] _player2PerspectiveMap = {
+    private static final int[] PLAYER_2_PERSPECTIVE_MAP = {
                                 35,
                             24, 34, 33,
                         15, 23, 22, 32, 31,
@@ -86,7 +135,7 @@ public class Board {
             0, 2, 1, 5, 4, 10, 9,  17,  16,  26,  25
     };
 
-    private static final int[] _player0PerspectiveMap = {
+    private static final int[] PLAYER_0_PERSPECTIVE_MAP = {
                                 0,
                             1,  2,  3,
                         4,  5,  6,  7,  8,
@@ -95,7 +144,15 @@ public class Board {
             25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35
     };
 
-    public static final TileNeighbourHelper _neighbourMap[] = {
+    public static final Map<TileOccupation,TileOccupation[]> OTHER_PLAYERS;
+    static{
+        OTHER_PLAYERS = Map.of(
+                TileOccupation.p0, new TileOccupation[]{TileOccupation.p1, TileOccupation.p2},
+                TileOccupation.p1, new TileOccupation[]{TileOccupation.p0, TileOccupation.p2},
+                TileOccupation.p2, new TileOccupation[]{TileOccupation.p0, TileOccupation.p1});
+    }
+
+    public static final TileNeighbourHelper NEIGHBOUR_MAP[] = {
             new TileNeighbourHelper(2, -1, -1),
 
             new TileNeighbourHelper(5,2, -1),

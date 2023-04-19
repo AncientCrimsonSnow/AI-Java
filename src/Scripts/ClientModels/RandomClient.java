@@ -7,28 +7,37 @@ import lenz.htw.loki.Move;
 import lenz.htw.loki.net.NetworkClient;
 
 import java.io.IOException;
-
 public class RandomClient {
     //Spiegelung
     //Symetrie
     //minimax algo
 
-
-
     public static void main(String[] args) throws IOException {
-        var board = new Board(PlayerNumber.Player0);
-        var client = new NetworkClient(null, "Ahegoe", Utilities.GetLogo());
 
+        //graph.SaveToFile("C:/Users/juriw/Desktop/Graph");
+
+
+        var client = new NetworkClient(null, "Ahegoe", Utilities.GetLogo());
+        var playerNumberInt = client.getMyPlayerNumber();
+        var playerNumber = PlayerNumber.p0;
+        if(playerNumberInt == 1){
+            playerNumber = PlayerNumber.p1;
+        }
+        else if(playerNumberInt == 2){
+            playerNumber = PlayerNumber.p2;
+        }
+        Utilities.Log(playerNumber);
+
+        var board = new Board(playerNumber);
 
         Move receiveMove;
         while (true) {
             while ((receiveMove = client.receiveMove()) != null) {
-                // verarbeite Zug
-                // Brettkonfiguration aktualisieren
+                board.UpdateBoard(receiveMove);
             }
-            // berechne genialen eigenen Zug
-            client.sendMove(board.GetBestMove());
+            var move = board.GetBestMove();
+            Utilities.Log(move);
+            client.sendMove(move);
         }
-
     }
 }

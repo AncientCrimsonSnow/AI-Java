@@ -1,6 +1,7 @@
 package Utilities;
 
-public enum PlayerNumber {
+public enum TileOccupation {
+    none,
     p0,
     p1,
     p2,
