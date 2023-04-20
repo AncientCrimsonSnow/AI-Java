@@ -36,7 +36,6 @@ public class RandomClient {
                 board.UpdateBoard(receiveMove);
             }
             var move = board.GetBestMove();
-            Utilities.Log(move);
             client.sendMove(move);
         }
     }
