@@ -4,14 +4,15 @@ package Utilities;
 import lenz.htw.loki.Move;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Map;
 
 public class Board {
     private TileOccupation[] _board;
     private PlayerNumber _perspective;
 
-    private int[] _perspectiveMapOut;
-    private int[] _perspectiveMapIn;
+    private byte[] _perspectiveMapOut;
+    private byte[] _perspectiveMapIn;
 
     public Board(PlayerNumber perspective) {
 
@@ -50,19 +51,26 @@ public class Board {
     }
 
     private ArrayList<Move> GetValidMoves(){
+        var freeNeighbours = new HashSet<Integer>();
+        var myTiles = new ArrayList<Integer>();
         var result = new ArrayList<Move>();
         for(var i = 0; i != _board.length; i++){
             var tile = _board[i];
             if(tile == TileOccupation.p0){
-                var neighbours = NEIGHBOUR_MAP[i];
-                for (var neighbour: neighbours.neighbours) {
+                myTiles.add(i);
+                var tileNeighbours = NEIGHBOUR_MAP[i];
+                for (var neighbour : tileNeighbours.neighbours) {
                     if(neighbour >= 0)
-                        if(_board[neighbour] != TileOccupation.p0)
-                            if(TileHasMyNeighbours(i, neighbour))
-                                result.addAll(GenerateMoves(i, neighbour));
+                        if(_board[neighbour] != TileOccupation.p0){
+                            freeNeighbours.add(neighbour);
+                        }
                 }
             }
         }
+        for(var myTile : myTiles){
+            var neighbours = NEIGHBOUR_MAP[myTile];
+        }
+
         return result;
     }
 
@@ -118,7 +126,7 @@ public class Board {
 
 
 
-    private static final int[] PLAYER_1_PERSPECTIVE_MAP = {
+    private static final byte[] PLAYER_1_PERSPECTIVE_MAP = {
                                 25,
                             27, 26, 16,
                         29, 28, 18, 17, 9,
@@ -126,7 +134,7 @@ public class Board {
                 33, 32, 22, 21, 13, 12, 6,  5,  1,
             35, 34, 24, 23, 15, 14, 8,  7,  3,  2,  0
     };
-    private static final int[] PLAYER_2_PERSPECTIVE_MAP = {
+    private static final byte[] PLAYER_2_PERSPECTIVE_MAP = {
                                 35,
                             24, 34, 33,
                         15, 23, 22, 32, 31,
@@ -135,7 +143,7 @@ public class Board {
             0, 2, 1, 5, 4, 10, 9,  17,  16,  26,  25
     };
 
-    private static final int[] PLAYER_0_PERSPECTIVE_MAP = {
+    private static final byte[] PLAYER_0_PERSPECTIVE_MAP = {
                                 0,
                             1,  2,  3,
                         4,  5,  6,  7,  8,
