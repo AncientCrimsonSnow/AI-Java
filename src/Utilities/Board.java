@@ -4,17 +4,40 @@ package Utilities;
 import lenz.htw.loki.Move;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Map;
 
 public class Board {
-    private TileOccupation[] _board;
-    private PlayerNumber _perspective;
+
+    private static final byte  TILE_COUNT = 36;
+    private final BoardData _board;
+    private final PlayerNumber _perspective;
 
     private byte[] _perspectiveMapOut;
     private byte[] _perspectiveMapIn;
 
+    private byte _stoneCount = 4;
+
     public Board(PlayerNumber perspective) {
+
+        _perspective = perspective;
+
+        switch (_perspective) {
+            case p0:
+                _perspectiveMapIn = PLAYER_0_PERSPECTIVE_MAP;
+                _perspectiveMapOut = PLAYER_0_PERSPECTIVE_MAP;
+                break;
+            case p1:
+                _perspectiveMapIn = PLAYER_2_PERSPECTIVE_MAP;
+                _perspectiveMapOut = PLAYER_1_PERSPECTIVE_MAP;
+                break;
+            default:
+                _perspectiveMapIn = PLAYER_1_PERSPECTIVE_MAP;
+                _perspectiveMapOut = PLAYER_2_PERSPECTIVE_MAP;
+                break;
+        }
+        _board = new BoardData();
+    }
+
+    public Board(PlayerNumber perspective, BoardData board) {
 
         _perspective = perspective;
 
@@ -31,171 +54,152 @@ public class Board {
                 _perspectiveMapIn = PLAYER_1_PERSPECTIVE_MAP;
                 _perspectiveMapOut = PLAYER_2_PERSPECTIVE_MAP;
         }
-        _board = GetStartBoard();
+        _board = board;
     }
 
     public void UpdateBoard(Move move){
+        var perspektiveMove = new Move(
+                _perspectiveMapIn[move.from],
+                _perspectiveMapIn[move.to],
+                _perspectiveMapIn[move.push]
+        );
 
-        var movedFrom = _board[_perspectiveMapIn[move.from]];
-        var movedTo = _board[_perspectiveMapIn[move.to]];
+        var moveFromTile = _board.GetTileAndItsNeighbours(perspektiveMove.from);
 
-        _board[_perspectiveMapIn[move.from]] = TileOccupation.none;
+        _board.SetTile(perspektiveMove.from, 0);
 
-        var other2Players = OTHER_PLAYERS.get(movedFrom);
-
-        _board[_perspectiveMapIn[move.to]] = movedFrom;
-
-        if(movedTo == other2Players[0])
-            UpdateBoardPushHelper(other2Players[0], _perspectiveMapIn[move.push]);
-        else if(movedTo == other2Players[1])
-            UpdateBoardPushHelper(other2Players[1], _perspectiveMapIn[move.push]);
+        _board.SetTile(perspektiveMove.to, moveFromTile);
 
         CheckTilesForLoneliness();
     }
 
-    private void UpdateBoardPushHelper(TileOccupation playerWhoseGetPushed, byte pushedTo){
-        Utilities.Log("PUSH");
-        _board[pushedTo] = playerWhoseGetPushed;
+    public byte[] GetBoard(){
+        return _board.GetDataClone();
+    }
 
-        var neighboursOfPlayerCount = 0;
-        var neighbours = NEIGHBOUR_MAP[pushedTo];
+    public boolean DeadBoard(){
+        return _stoneCount <= 2;
+    }
 
-        for(var neighbour : neighbours)
-            if(_board[neighbour] == playerWhoseGetPushed)
-                neighboursOfPlayerCount++;
-
-        if(neighboursOfPlayerCount == 0){
-            Utilities.Log("DELETE");
-            _board[pushedTo] = TileOccupation.none;
-        }
+    public boolean WinningBoard(){
+        var stonesOnFinishLine = 0;
+        for(var finishTile : FINISH_LINE)
+            if((_board.GetTileAndItsNeighbours(finishTile) & BoardData.BIT_INDEX_MASKS[0]) == 1)
+                stonesOnFinishLine++;
+        return stonesOnFinishLine == 2;
     }
 
     private void CheckTilesForLoneliness(){
-        for(byte i = 0; i != _board.length; i++){
-            var tile = _board[i];
-            if(tile == TileOccupation.p0){
-                var neighbours = NEIGHBOUR_MAP[i];
-                var myOccupationCount = 0;
-                for(var neighbour : neighbours)
-                    if(_board[neighbour] == TileOccupation.p0)
-                        myOccupationCount++;
-                if(myOccupationCount == 0)
-                    _board[i] = TileOccupation.none;
-            }
-            else if(tile == TileOccupation.p1){
-                var neighbours = NEIGHBOUR_MAP[i];
-                var myOccupationCount = 0;
-                for(var neighbour : neighbours)
-                    if(_board[neighbour] == TileOccupation.p1)
-                        myOccupationCount++;
-                if(myOccupationCount == 0)
-                    _board[i] = TileOccupation.none;
-            }
-            else if(tile == TileOccupation.p2){
-                var neighbours = NEIGHBOUR_MAP[i];
-                var myOccupationCount = 0;
-                for(var neighbour : neighbours)
-                    if(_board[neighbour] == TileOccupation.p2)
-                        myOccupationCount++;
-                if(myOccupationCount == 0)
-                    _board[i] = TileOccupation.none;
+        for(byte i = 0; i != TILE_COUNT; i++){
+            var tileAndItsNeighbours = _board.GetTileAndItsNeighbours(i);
+            var tile = tileAndItsNeighbours & BoardData.BIT_INDEX_MASKS[0];
+            if(!(
+                    (tile == ((tileAndItsNeighbours & BoardData.BIT_INDEX_MASKS[1]) >> 2)) ||
+                    (tile == ((tileAndItsNeighbours & BoardData.BIT_INDEX_MASKS[2]) >> 4)) ||
+                    (tile == ((tileAndItsNeighbours & BoardData.BIT_INDEX_MASKS[3]) >> 6)))) {
+                _board.SetTile(i, 0);
+                if(tile == 1)
+                    _stoneCount--;
             }
         }
     }
 
-    private ArrayList<Move> GetValidMoves(){
-        var notMyOccupiedNeighbours = new HashSet<Byte>();
-        var myTiles = new ArrayList<Byte>();
+    public ArrayList<Move> GetValidMoves(){
+        var indices_MyTilesAndTheirNeighbours = new ArrayList<byte[]>();
 
-        for(byte i = 0; i != _board.length; i++){
-            var tile = _board[i];
-            if(tile == TileOccupation.p0){
-                myTiles.add(i);
-                for (var neighbour : NEIGHBOUR_MAP[i]) {
-                    if(_board[neighbour] != TileOccupation.p0){
-                        notMyOccupiedNeighbours.add(neighbour);
-                    }
-                }
+        for(byte i = 0; i != TILE_COUNT; i++){
+            var tileAndItsNeighbours = _board.GetTileAndItsNeighbours(i);
+            var tile = tileAndItsNeighbours & BoardData.BIT_INDEX_MASKS[0];
+            if(tile == 1){
+                //My Tile and its Neighbours
+                indices_MyTilesAndTheirNeighbours.add(new byte[]{i, tileAndItsNeighbours});
             }
         }
-        Utilities.Log("MY Tiles: " + myTiles.size());
-        Utilities.Log("Neighbours which are not my: " + notMyOccupiedNeighbours.size());
-
 
         var result = new ArrayList<Move>();
 
-        for(var myTile : myTiles){
-            //CHANGE, gives wrong if 2 tiles left, even if u can move them since u can move the tile again next to one neighbour
-            var neighbours = NEIGHBOUR_MAP[myTile];
-            var lonelyNeighboursNotOccupiedByMeNeighbours = new ArrayList<ArrayList<Byte>>();
-            for(var neighbour : neighbours)
-                if(_board[neighbour] == TileOccupation.p0){
-                    var notOccupiedByMe = GetNeighbourCount(neighbour);
-                    if(notOccupiedByMe.size() == 2)
-                        lonelyNeighboursNotOccupiedByMeNeighbours.add(notOccupiedByMe);
-                }
+        for(var index_MyTilesAndTheirNeighbours : indices_MyTilesAndTheirNeighbours){
+            var myTileAndItsNeighbours = index_MyTilesAndTheirNeighbours[1];
+            var myTileIndex = index_MyTilesAndTheirNeighbours[0];
+            //Geht alle meine Tiles durch
+            for(var neighboursForTile : indices_MyTilesAndTheirNeighbours){
+                //Geht alle Nachbarn meiner Tiles durch
+                var neighboursIndices = NEIGHBOUR_MAP[neighboursForTile[0]];
+                for(byte n = 1; n != neighboursIndices.length; n++){
+                    var index = neighboursIndices[n-1];
+                    var neighboursValue = (myTileAndItsNeighbours & BoardData.BIT_INDEX_MASKS[n]) >> (n*2);
 
-            if(lonelyNeighboursNotOccupiedByMeNeighbours.size() == 0){
-                for (var notMyOccupiedNeighbour : notMyOccupiedNeighbours) {
-                    var neighbourInformation = GetNeighbourInformation(myTile, notMyOccupiedNeighbour);
-                    //Utilities.Log("NeighboursInformation: from: " + myTile + " to " + notMyOccupiedNeighbour + " :" + neighbourInformation);
-                    if(neighbourInformation.neighboursOccupiedByMeCount >= 1)
-                        if(_board[notMyOccupiedNeighbour] == TileOccupation.none)
-                            result.add(new Move(_perspectiveMapOut[myTile], _perspectiveMapOut[notMyOccupiedNeighbour], 255));
-                        else
-                            for (var posToPush : neighbourInformation.freePos)
-                                result.add(new Move(_perspectiveMapOut[myTile], _perspectiveMapOut[notMyOccupiedNeighbour], _perspectiveMapOut[posToPush]));
+                    if(neighboursValue == 0){
+                        //hat der nachbar genug nachbarn vom eigenen Typ -> außer das myTile
+                        var myTilesCount = 0;
 
+                        var neighboursNeighboursValues = _board.GetTileAndItsNeighbours(index);
+                        var neighboursNeighboursIndices = NEIGHBOUR_MAP[index];
+                        for(byte i = 1; i != neighboursNeighboursIndices.length; i++){
+                            var neighboursNeighboursValue = (neighboursNeighboursValues & BoardData.BIT_INDEX_MASKS[i]) >> (i*2);
+                            var neighboursNeighboursIndex = neighboursNeighboursIndices[i-1];
+                            if(neighboursNeighboursIndex == myTileIndex)
+                                continue;
+
+                            if(neighboursNeighboursValue == neighboursValue){
+                                myTilesCount++;
+                            }
+                        }
+
+                        if(myTilesCount > 0){
+                            result.add(new Move(_perspectiveMapOut[myTileIndex], _perspectiveMapOut[index], 255));
+                        }
+                    }
+                    else if(neighboursValue == 2){
+                        //hat der der nachbar genug nachbarn vom eigenen Typ -> außer das myTile
+                        var myTilesCount = 0;
+                        var freeSpacesIndices = new ArrayList<Byte>();
+
+                        var neighboursNeighboursValues = _board.GetTileAndItsNeighbours(index);
+                        var neighboursNeighboursIndices = NEIGHBOUR_MAP[index];
+                        for(byte i = 1; i != 4; i++){
+                            var neighboursNeighboursValue = (neighboursNeighboursValues & BoardData.BIT_INDEX_MASKS[i]) >> (i*2);
+                            var neighboursNeighboursIndex = neighboursNeighboursIndices[i-1];
+                            if(neighboursNeighboursIndex == myTileIndex)
+                                freeSpacesIndices.add(neighboursNeighboursIndex);
+                            else if(neighboursNeighboursValue == neighboursValue){
+                                myTilesCount++;
+                            }
+                            else if(neighboursNeighboursValue == 0)
+                                freeSpacesIndices.add(neighboursNeighboursIndex);
+                        }
+                        if(myTilesCount > 0){
+                            for(var freeSpaceIndex : freeSpacesIndices){
+                                result.add(new Move(_perspectiveMapOut[myTileIndex], _perspectiveMapOut[index], _perspectiveMapOut[freeSpaceIndex]));
+                            }
+                        }
+                    }
+                    else if(neighboursValue == 3){
+                        //hat der der nachbar genug nachbarn vom eigenen Typ -> außer das myTile
+                        var myTilesCount = 0;
+                        var freeSpacesIndices = new ArrayList<Byte>();
+
+                        var neighboursNeighboursValues = _board.GetTileAndItsNeighbours(index);
+                        var neighboursNeighboursIndices = NEIGHBOUR_MAP[index];
+                        for(byte i = 1; i != 4; i++){
+                            var neighboursNeighboursValue = (neighboursNeighboursValues & BoardData.BIT_INDEX_MASKS[i]) >> (i*2);
+                            var neighboursNeighboursIndex = neighboursNeighboursIndices[i-1];
+                            if(neighboursNeighboursIndex == myTileIndex)
+                                freeSpacesIndices.add(neighboursNeighboursIndex);
+                            else if(neighboursNeighboursValue == neighboursValue){
+                                myTilesCount++;
+                            }
+                            else if(neighboursNeighboursValue == 0)
+                                freeSpacesIndices.add(neighboursNeighboursIndex);
+                        }
+                        if(myTilesCount > 0){
+                            for(var freeSpaceIndex : freeSpacesIndices){
+                                result.add(new Move(_perspectiveMapOut[myTileIndex], _perspectiveMapOut[index], _perspectiveMapOut[freeSpaceIndex]));
+                            }
+                        }
+                    }
                 }
             }
-            else{
-                var commonNeighbours = GetCommonBytes(lonelyNeighboursNotOccupiedByMeNeighbours);
-                for (var commonNeighbour : commonNeighbours) {
-                    var neighbourInformation = GetNeighbourInformation(myTile, commonNeighbour);
-                        if(_board[commonNeighbour] == TileOccupation.none)
-                            result.add(new Move(_perspectiveMapOut[myTile], _perspectiveMapOut[commonNeighbour], 255));
-                        else
-                            for (var posToPush : neighbourInformation.freePos)
-                                result.add(new Move(_perspectiveMapOut[myTile], _perspectiveMapOut[commonNeighbour], _perspectiveMapOut[posToPush]));
-                }
-            }
-        }
-
-        return result;
-    }
-    private NeighbourInformation GetNeighbourInformation(byte moveFromTile, byte moveToTile){
-        var result = new NeighbourInformation();
-
-        for (var neighbour : NEIGHBOUR_MAP[moveToTile]) {
-            var occupation = _board[neighbour];
-            if(occupation == TileOccupation.p0)
-                if(neighbour != moveFromTile)
-                    result.neighboursOccupiedByMeCount++;
-                else{
-                    result.freePos.add(moveFromTile);
-                }
-            else if(occupation == TileOccupation.none)
-                result.freePos.add(neighbour);
-        }
-        return result;
-    }
-
-    private class NeighbourInformation{
-        public byte neighboursOccupiedByMeCount = 0;
-        public ArrayList<Byte> freePos = new ArrayList<>();
-
-        @Override
-        public String toString() {
-            return "count: " + neighboursOccupiedByMeCount + "freePosCount: " + freePos.size();
-        }
-    }
-
-    private ArrayList<Byte> GetNeighbourCount(byte tile){
-        ArrayList<Byte> result = new ArrayList<>();
-        var neighbours = NEIGHBOUR_MAP[tile];
-        for (var neighbour : neighbours) {
-            if(_board[neighbour] != TileOccupation.p0)
-                result.add(neighbour);
         }
         return result;
     }
@@ -203,67 +207,14 @@ public class Board {
 
     public Move GetBestMove(){
         var validMoves = GetValidMoves();
-        Utilities.Log("Number of Moves: " + validMoves.size());
+        Utilities.Log(validMoves.size());
         var result = validMoves.get(Utilities.RandomInt(0, validMoves.size()));
+        //Utilities.Log(result);
         return result;
     }
-
-    private static TileOccupation[] GetStartBoard(){
-        var o = TileOccupation.none;
-        var p0 = TileOccupation.p0;
-        var p1 = TileOccupation.p1;
-        var p2 = TileOccupation.p2;
-
-        return new TileOccupation[]{
-                                    p0,
-                                p0, p0, p0,
-                            o,  o,  o,  o,  o,
-                        o,  o,  o,  o,  o,  o,  o,
-                    p1, o,  o,  o,  o,  o,  o,  o,  p2,
-                p1, p1, p1, o,  o,  o,  o,  o,  p2, p2, p2
-        };
-    }
-
-    public static Byte[] GetCommonBytes(ArrayList<ArrayList<Byte>> arrayList) {
-        // Überprüfen, ob die übergebene ArrayList leer ist
-        if (arrayList == null || arrayList.size() == 0) {
-            return null;
-        }
-
-        // Überprüfen, ob die Byte-Arrays in der ArrayList leer sind
-        for (ArrayList<Byte> arr : arrayList) {
-            if (arr == null || arr.size() == 0) {
-                return null;
-            }
-        }
-
-        // Erstellen eines HashSet, um die gemeinsamen Byte zu speichern
-        HashSet<Byte> commonBytes = new HashSet<>();
-        // Füllen Sie das HashSet mit den Byte aus dem ersten Byte-Array in der ArrayList
-        for (Byte i : arrayList.get(0)) {
-            commonBytes.add(i);
-        }
-
-        // Durchlaufen der restlichen Byte-Arrays in der ArrayList und entfernen von Byte, die nicht in allen Arrays vorkommen
-        for (int i = 1; i < arrayList.size(); i++) {
-            HashSet<Byte> currentBytes = new HashSet<>();
-            for (Byte j : arrayList.get(i)) {
-                currentBytes.add(j);
-            }
-            commonBytes.retainAll(currentBytes);
-        }
-
-        // Erstellen eines neuen Byte-Arrays, um die gemeinsamen Byte zu speichern
-        Byte[] result = new Byte[commonBytes.size()];
-        int index = 0;
-        for (Byte i : commonBytes) {
-            result[index++] = i;
-        }
-
-        return result;
-    }
-
-
+    private static final byte[] FINISH_LINE = {
+        25,27,29,31,33,35
+    };
 
     private static final byte[] PLAYER_1_PERSPECTIVE_MAP = {
                                 25,
@@ -290,14 +241,6 @@ public class Board {
                 16, 17, 18, 19, 20, 21, 22, 23, 24,
             25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35
     };
-
-    public static final Map<TileOccupation,TileOccupation[]> OTHER_PLAYERS;
-    static{
-        OTHER_PLAYERS = Map.of(
-                TileOccupation.p0, new TileOccupation[]{TileOccupation.p1, TileOccupation.p2},
-                TileOccupation.p1, new TileOccupation[]{TileOccupation.p0, TileOccupation.p2},
-                TileOccupation.p2, new TileOccupation[]{TileOccupation.p0, TileOccupation.p1});
-    }
 
     public static final byte[][] NEIGHBOUR_MAP = {
             new byte[]{2},

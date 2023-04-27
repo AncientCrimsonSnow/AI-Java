@@ -8,14 +8,9 @@ import lenz.htw.loki.net.NetworkClient;
 
 import java.io.IOException;
 public class RandomClient {
-    //Spiegelung
-    //Symetrie
-    //minimax algo
-
     public static void main(String[] args) throws IOException {
 
-        //graph.SaveToFile("C:/Users/juriw/Desktop/Graph");
-
+        var board = new Board(PlayerNumber.p0);
 
         var client = new NetworkClient(null, "Ahegoe", Utilities.GetLogo());
         var playerNumberInt = client.getMyPlayerNumber();
@@ -28,7 +23,7 @@ public class RandomClient {
         }
         Utilities.Log(playerNumber);
 
-        var board = new Board(playerNumber);
+
 
         Move receiveMove;
         while (true) {
@@ -36,6 +31,7 @@ public class RandomClient {
                 board.UpdateBoard(receiveMove);
             }
             var move = board.GetBestMove();
+            Utilities.Log(move);
             client.sendMove(move);
         }
     }
