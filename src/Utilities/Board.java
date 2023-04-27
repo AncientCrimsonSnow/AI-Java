@@ -125,7 +125,7 @@ public class Board {
             for(var neighboursForTile : indices_MyTilesAndTheirNeighbours){
                 //Geht alle Nachbarn meiner Tiles durch
                 var neighboursIndices = NEIGHBOUR_MAP[neighboursForTile[0]];
-                for(byte n = 1; n != neighboursIndices.length; n++){
+                for(byte n = 1; n <= neighboursIndices.length; n++){
                     var index = neighboursIndices[n-1];
                     var neighboursValue = (myTileAndItsNeighbours & BoardData.BIT_INDEX_MASKS[n]) >> (n*2);
 
@@ -135,7 +135,7 @@ public class Board {
 
                         var neighboursNeighboursValues = _board.GetTileAndItsNeighbours(index);
                         var neighboursNeighboursIndices = NEIGHBOUR_MAP[index];
-                        for(byte i = 1; i != neighboursNeighboursIndices.length; i++){
+                        for(byte i = 1; i <= neighboursNeighboursIndices.length; i++){
                             var neighboursNeighboursValue = (neighboursNeighboursValues & BoardData.BIT_INDEX_MASKS[i]) >> (i*2);
                             var neighboursNeighboursIndex = neighboursNeighboursIndices[i-1];
                             if(neighboursNeighboursIndex == myTileIndex)
@@ -157,7 +157,7 @@ public class Board {
 
                         var neighboursNeighboursValues = _board.GetTileAndItsNeighbours(index);
                         var neighboursNeighboursIndices = NEIGHBOUR_MAP[index];
-                        for(byte i = 1; i != 4; i++){
+                        for(byte i = 1; i <= neighboursNeighboursIndices.length; i++){
                             var neighboursNeighboursValue = (neighboursNeighboursValues & BoardData.BIT_INDEX_MASKS[i]) >> (i*2);
                             var neighboursNeighboursIndex = neighboursNeighboursIndices[i-1];
                             if(neighboursNeighboursIndex == myTileIndex)
@@ -181,7 +181,7 @@ public class Board {
 
                         var neighboursNeighboursValues = _board.GetTileAndItsNeighbours(index);
                         var neighboursNeighboursIndices = NEIGHBOUR_MAP[index];
-                        for(byte i = 1; i != 4; i++){
+                        for(byte i = 1; i <= neighboursNeighboursIndices.length; i++){
                             var neighboursNeighboursValue = (neighboursNeighboursValues & BoardData.BIT_INDEX_MASKS[i]) >> (i*2);
                             var neighboursNeighboursIndex = neighboursNeighboursIndices[i-1];
                             if(neighboursNeighboursIndex == myTileIndex)
