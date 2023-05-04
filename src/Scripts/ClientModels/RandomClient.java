@@ -10,8 +10,6 @@ import java.io.IOException;
 public class RandomClient {
     public static void main(String[] args) throws IOException {
 
-        var board = new Board(PlayerNumber.p0);
-
         var client = new NetworkClient(null, "Ahegoe", Utilities.GetLogo());
         var playerNumberInt = client.getMyPlayerNumber();
         var playerNumber = PlayerNumber.p0;
@@ -22,7 +20,7 @@ public class RandomClient {
             playerNumber = PlayerNumber.p2;
         }
         Utilities.Log(playerNumber);
-
+        var board = new Board(playerNumber);
 
 
         Move receiveMove;
@@ -34,5 +32,6 @@ public class RandomClient {
             Utilities.Log(move);
             client.sendMove(move);
         }
+
     }
 }

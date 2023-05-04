@@ -58,17 +58,18 @@ public class Board {
     }
 
     public void UpdateBoard(Move move){
-        var perspektiveMove = new Move(
-                _perspectiveMapIn[move.from],
-                _perspectiveMapIn[move.to],
-                _perspectiveMapIn[move.push]
-        );
+        var perspectiveMoveFrom = _perspectiveMapIn[move.from];
+        var perspectiveMoveTo = _perspectiveMapIn[move.to];
 
-        var moveFromTile = _board.GetTileAndItsNeighbours(perspektiveMove.from);
+        var moveFromTile = _board.GetTileAndItsNeighbours(perspectiveMoveFrom) >> 6;
+        var moveToTile = _board.GetTileAndItsNeighbours(perspectiveMoveTo) >> 6;
 
-        _board.SetTile(perspektiveMove.from, 0);
+        _board.SetTile(perspectiveMoveFrom, 0);
+        _board.SetTile(perspectiveMoveTo, moveFromTile);
 
-        _board.SetTile(perspektiveMove.to, moveFromTile);
+        if(move.push <= 35){
+            _board.SetTile(_perspectiveMapIn[move.push], moveToTile);
+        }
 
         CheckTilesForLoneliness();
     }
@@ -84,7 +85,7 @@ public class Board {
     public boolean WinningBoard(){
         var stonesOnFinishLine = 0;
         for(var finishTile : FINISH_LINE)
-            if((_board.GetTileAndItsNeighbours(finishTile) & BoardData.BIT_INDEX_MASKS[0]) == 1)
+            if((_board.GetTileAndItsNeighbours(finishTile) >> 6) == 1)
                 stonesOnFinishLine++;
         return stonesOnFinishLine == 2;
     }
@@ -92,11 +93,11 @@ public class Board {
     private void CheckTilesForLoneliness(){
         for(byte i = 0; i != TILE_COUNT; i++){
             var tileAndItsNeighbours = _board.GetTileAndItsNeighbours(i);
-            var tile = tileAndItsNeighbours & BoardData.BIT_INDEX_MASKS[0];
+            var tile = (byte)(tileAndItsNeighbours >> 6);
             if(!(
-                    (tile == ((tileAndItsNeighbours & BoardData.BIT_INDEX_MASKS[1]) >> 2)) ||
-                    (tile == ((tileAndItsNeighbours & BoardData.BIT_INDEX_MASKS[2]) >> 4)) ||
-                    (tile == ((tileAndItsNeighbours & BoardData.BIT_INDEX_MASKS[3]) >> 6)))) {
+                    (tile == ((tileAndItsNeighbours & BoardData.BIT_INDEX_MASKS[0])))       ||
+                    (tile == ((tileAndItsNeighbours & BoardData.BIT_INDEX_MASKS[1]) >> 2))  ||
+                    (tile == ((tileAndItsNeighbours & BoardData.BIT_INDEX_MASKS[2]) >> 4)))) {
                 _board.SetTile(i, 0);
                 if(tile == 1)
                     _stoneCount--;
@@ -109,7 +110,7 @@ public class Board {
 
         for(byte i = 0; i != TILE_COUNT; i++){
             var tileAndItsNeighbours = _board.GetTileAndItsNeighbours(i);
-            var tile = tileAndItsNeighbours & BoardData.BIT_INDEX_MASKS[0];
+            var tile = tileAndItsNeighbours  >> 6;
             if(tile == 1){
                 //My Tile and its Neighbours
                 indices_MyTilesAndTheirNeighbours.add(new byte[]{i, tileAndItsNeighbours});
@@ -119,84 +120,42 @@ public class Board {
         var result = new ArrayList<Move>();
 
         for(var index_MyTilesAndTheirNeighbours : indices_MyTilesAndTheirNeighbours){
-            var myTileAndItsNeighbours = index_MyTilesAndTheirNeighbours[1];
             var myTileIndex = index_MyTilesAndTheirNeighbours[0];
             //Geht alle meine Tiles durch
             for(var neighboursForTile : indices_MyTilesAndTheirNeighbours){
                 //Geht alle Nachbarn meiner Tiles durch
                 var neighboursIndices = NEIGHBOUR_MAP[neighboursForTile[0]];
-                for(byte n = 1; n <= neighboursIndices.length; n++){
-                    var index = neighboursIndices[n-1];
-                    var neighboursValue = (myTileAndItsNeighbours & BoardData.BIT_INDEX_MASKS[n]) >> (n*2);
+                for(byte n = 0; n != neighboursIndices.length; n++){
+                    var neighboursIndex = neighboursIndices[n];
+                    var neighboursValue = BoardData.GetNeighboursValueAt(n, neighboursForTile[1]);
 
                     if(neighboursValue == 0){
                         //hat der nachbar genug nachbarn vom eigenen Typ -> außer das myTile
                         var myTilesCount = 0;
 
-                        var neighboursNeighboursValues = _board.GetTileAndItsNeighbours(index);
-                        var neighboursNeighboursIndices = NEIGHBOUR_MAP[index];
-                        for(byte i = 1; i <= neighboursNeighboursIndices.length; i++){
-                            var neighboursNeighboursValue = (neighboursNeighboursValues & BoardData.BIT_INDEX_MASKS[i]) >> (i*2);
-                            var neighboursNeighboursIndex = neighboursNeighboursIndices[i-1];
+                        var neighboursNeighboursValues = _board.GetTileAndItsNeighbours(neighboursIndex);
+                        var neighboursNeighboursIndices = NEIGHBOUR_MAP[neighboursIndex];
+
+                        for(byte nn = 0; nn != neighboursNeighboursIndices.length; nn++){
+                            var neighboursNeighboursIndex = neighboursNeighboursIndices[nn];
+                            var neighboursNeighboursValue = BoardData.GetNeighboursValueAt(nn, neighboursNeighboursValues);
                             if(neighboursNeighboursIndex == myTileIndex)
                                 continue;
 
-                            if(neighboursNeighboursValue == neighboursValue){
+                            if(neighboursNeighboursValue == 1){
                                 myTilesCount++;
                             }
                         }
 
                         if(myTilesCount > 0){
-                            result.add(new Move(_perspectiveMapOut[myTileIndex], _perspectiveMapOut[index], 255));
+                            result.add(new Move(_perspectiveMapOut[myTileIndex], _perspectiveMapOut[neighboursIndex], 255));
                         }
                     }
                     else if(neighboursValue == 2){
-                        //hat der der nachbar genug nachbarn vom eigenen Typ -> außer das myTile
-                        var myTilesCount = 0;
-                        var freeSpacesIndices = new ArrayList<Byte>();
-
-                        var neighboursNeighboursValues = _board.GetTileAndItsNeighbours(index);
-                        var neighboursNeighboursIndices = NEIGHBOUR_MAP[index];
-                        for(byte i = 1; i <= neighboursNeighboursIndices.length; i++){
-                            var neighboursNeighboursValue = (neighboursNeighboursValues & BoardData.BIT_INDEX_MASKS[i]) >> (i*2);
-                            var neighboursNeighboursIndex = neighboursNeighboursIndices[i-1];
-                            if(neighboursNeighboursIndex == myTileIndex)
-                                freeSpacesIndices.add(neighboursNeighboursIndex);
-                            else if(neighboursNeighboursValue == neighboursValue){
-                                myTilesCount++;
-                            }
-                            else if(neighboursNeighboursValue == 0)
-                                freeSpacesIndices.add(neighboursNeighboursIndex);
-                        }
-                        if(myTilesCount > 0){
-                            for(var freeSpaceIndex : freeSpacesIndices){
-                                result.add(new Move(_perspectiveMapOut[myTileIndex], _perspectiveMapOut[index], _perspectiveMapOut[freeSpaceIndex]));
-                            }
-                        }
+                        EvaluateEnemiesTile(result, myTileIndex, neighboursIndex);
                     }
                     else if(neighboursValue == 3){
-                        //hat der der nachbar genug nachbarn vom eigenen Typ -> außer das myTile
-                        var myTilesCount = 0;
-                        var freeSpacesIndices = new ArrayList<Byte>();
-
-                        var neighboursNeighboursValues = _board.GetTileAndItsNeighbours(index);
-                        var neighboursNeighboursIndices = NEIGHBOUR_MAP[index];
-                        for(byte i = 1; i <= neighboursNeighboursIndices.length; i++){
-                            var neighboursNeighboursValue = (neighboursNeighboursValues & BoardData.BIT_INDEX_MASKS[i]) >> (i*2);
-                            var neighboursNeighboursIndex = neighboursNeighboursIndices[i-1];
-                            if(neighboursNeighboursIndex == myTileIndex)
-                                freeSpacesIndices.add(neighboursNeighboursIndex);
-                            else if(neighboursNeighboursValue == neighboursValue){
-                                myTilesCount++;
-                            }
-                            else if(neighboursNeighboursValue == 0)
-                                freeSpacesIndices.add(neighboursNeighboursIndex);
-                        }
-                        if(myTilesCount > 0){
-                            for(var freeSpaceIndex : freeSpacesIndices){
-                                result.add(new Move(_perspectiveMapOut[myTileIndex], _perspectiveMapOut[index], _perspectiveMapOut[freeSpaceIndex]));
-                            }
-                        }
+                        EvaluateEnemiesTile(result, myTileIndex, neighboursIndex);
                     }
                 }
             }
@@ -204,12 +163,40 @@ public class Board {
         return result;
     }
 
+    private void EvaluateEnemiesTile(ArrayList<Move> result, byte myTileIndex, byte index) {
+        var myTilesCount = 0;
+
+        var freeSpacesIndices = new ArrayList<Byte>();
+
+        var neighboursNeighboursValues = _board.GetTileAndItsNeighbours(index);
+        var neighboursNeighboursIndices = NEIGHBOUR_MAP[index];
+
+        for(byte nn = 0; nn != neighboursNeighboursIndices.length; nn++){
+
+            var neighboursNeighboursIndex = neighboursNeighboursIndices[nn];
+            var neighboursNeighboursValue = BoardData.GetNeighboursValueAt(nn, neighboursNeighboursValues);
+
+            if(neighboursNeighboursIndex == myTileIndex)
+                freeSpacesIndices.add(neighboursNeighboursIndex);
+            else if(neighboursNeighboursValue == 1){
+                myTilesCount++;
+            }
+            else if(neighboursNeighboursValue == 0)
+                freeSpacesIndices.add(neighboursNeighboursIndex);
+        }
+        if(myTilesCount > 0){
+            for(var freeSpaceIndex : freeSpacesIndices){
+                result.add(new Move(_perspectiveMapOut[myTileIndex], _perspectiveMapOut[index], _perspectiveMapOut[freeSpaceIndex]));
+            }
+        }
+    }
+
 
     public Move GetBestMove(){
         var validMoves = GetValidMoves();
-        Utilities.Log(validMoves.size());
         var result = validMoves.get(Utilities.RandomInt(0, validMoves.size()));
-        //Utilities.Log(result);
+        Utilities.Log(_board);
+        Utilities.Log("N: " + validMoves.size());
         return result;
     }
     private static final byte[] FINISH_LINE = {
