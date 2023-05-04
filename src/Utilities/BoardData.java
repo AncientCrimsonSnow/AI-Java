@@ -32,7 +32,31 @@ public class BoardData {
         byte shiftedValue = (byte) (value << (bitElementIndex*2));
         _data[byteIndex] = (byte)((~BIT_INDEX_MASKS[bitElementIndex] & _data[byteIndex]) | (BIT_INDEX_MASKS[bitElementIndex] & shiftedValue));
     }
+    /*
+    Wenn ein stein von 2 verschiedenen Steinen umringt ist = nicht einsam
 
+    Dokumentaton
+    alle überlegten Schritte
+    Abweichungen vom Standard
+    Wie sieht meine Config aus
+    Spielbaumbesonderheiten
+    3 Spieler im Spielbaum
+
+    Spielbaumparameter
+        Tiefe
+        Wieviele Ebenen Schaffe ich
+
+    Zeitlimitmanagement
+    Generelle Performanceüberlegung
+
+    Bewertungsfunktion
+        Merkmale
+        Warum
+
+    Lernalgorythmus
+
+
+     */
     public void SetTile(int index, int value){
         SetTile((byte)index, (byte)value);
     }
@@ -66,12 +90,11 @@ public class BoardData {
             case 24: return (byte)(((BIT_INDEX_MASKS[0] & _data[6]) << 6) | ((BIT_INDEX_MASKS[3] & _data[5]) >>>2) | ((BIT_INDEX_MASKS[2] & _data[8]) >>>2));
             case 25: return (byte)(((BIT_INDEX_MASKS[1] & _data[6]) << 4) | ((BIT_INDEX_MASKS[2] & _data[6]) >>>0));
             case 26:
-                var a = ((BIT_INDEX_MASKS[2] & _data[6]) << 2);
-                var b = ((BIT_INDEX_MASKS[1] & _data[6]) << 2);
-                var c = ((BIT_INDEX_MASKS[0] & _data[4]) << 2);
-                var d = ((byte)(BIT_INDEX_MASKS[3] & _data[6]) >>> 6);
-                var e = a | b | c | d;
-
+                var a = (byte) ((BIT_INDEX_MASKS[2] & _data[6]) << 2);
+                var b = (byte) ((BIT_INDEX_MASKS[1] & _data[6]) << 2);
+                var c = (byte) ((BIT_INDEX_MASKS[0] & _data[4]) << 2);
+                var d = (byte) ((BIT_INDEX_MASKS[3] & _data[6]) >> 6);
+                var e = (byte) (a | b | c | d);
 
                 return (byte)(((BIT_INDEX_MASKS[2] & _data[6]) << 2) | ((BIT_INDEX_MASKS[1] & _data[6]) << 2) | ((BIT_INDEX_MASKS[0] & _data[4]) << 2) | ((BIT_INDEX_MASKS[3] & _data[6]) >>>6));
             case 27: return (byte)(((BIT_INDEX_MASKS[3] & _data[6]) >>>0) | ((BIT_INDEX_MASKS[2] & _data[6]) >>>0) | ((BIT_INDEX_MASKS[0] & _data[7]) << 2));
@@ -153,11 +176,11 @@ public class BoardData {
     }
 
 
-    public static final byte[] BIT_INDEX_MASKS = {
-            (byte)0b00000011,
-            (byte)0b00001100,
-            (byte)0b00110000,
-            (byte)0b11000000,
+    public static final int[] BIT_INDEX_MASKS = {
+            0b00000011,
+            0b00001100,
+            0b00110000,
+            0b11000000,
     };
 
     private final byte[] TILE_AND_ITS_NEIGHBOURS = {
