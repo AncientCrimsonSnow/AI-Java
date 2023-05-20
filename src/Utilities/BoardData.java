@@ -3,6 +3,51 @@ public class BoardData {
 
     private final byte[] _data = new byte[9];
 
+    @Override
+    public String toString() {
+        return  GetTileValueAt((byte)0, GetTileAndItsNeighbours(25)) + " " +
+                GetTileValueAt((byte)0, GetTileAndItsNeighbours(26)) + " " +
+                GetTileValueAt((byte)0, GetTileAndItsNeighbours(27)) + " " +
+                GetTileValueAt((byte)0, GetTileAndItsNeighbours(28)) + " " +
+                GetTileValueAt((byte)0, GetTileAndItsNeighbours(29)) + " " +
+                GetTileValueAt((byte)0, GetTileAndItsNeighbours(30)) + " " +
+                GetTileValueAt((byte)0, GetTileAndItsNeighbours(31)) + " " +
+                GetTileValueAt((byte)0, GetTileAndItsNeighbours(32)) + " " +
+                GetTileValueAt((byte)0, GetTileAndItsNeighbours(33)) + " " +
+                GetTileValueAt((byte)0, GetTileAndItsNeighbours(34)) + " " +
+                GetTileValueAt((byte)0, GetTileAndItsNeighbours(35)) + "\n" +
+
+                "  " + GetTileValueAt((byte)0, GetTileAndItsNeighbours(16)) + " " +
+                GetTileValueAt((byte)0, GetTileAndItsNeighbours(17)) + " " +
+                GetTileValueAt((byte)0, GetTileAndItsNeighbours(18)) + " " +
+                GetTileValueAt((byte)0, GetTileAndItsNeighbours(19)) + " " +
+                GetTileValueAt((byte)0, GetTileAndItsNeighbours(20)) + " " +
+                GetTileValueAt((byte)0, GetTileAndItsNeighbours(21)) + " " +
+                GetTileValueAt((byte)0, GetTileAndItsNeighbours(22)) + " " +
+                GetTileValueAt((byte)0, GetTileAndItsNeighbours(23)) + " " +
+                GetTileValueAt((byte)0, GetTileAndItsNeighbours(24)) + "\n" +
+
+                "    " + GetTileValueAt((byte)0, GetTileAndItsNeighbours(9)) + " " +
+                GetTileValueAt((byte)0, GetTileAndItsNeighbours(10)) + " " +
+                GetTileValueAt((byte)0, GetTileAndItsNeighbours(11)) + " " +
+                GetTileValueAt((byte)0, GetTileAndItsNeighbours(12)) + " " +
+                GetTileValueAt((byte)0, GetTileAndItsNeighbours(13)) + " " +
+                GetTileValueAt((byte)0, GetTileAndItsNeighbours(14)) + " " +
+                GetTileValueAt((byte)0, GetTileAndItsNeighbours(15)) + "\n" +
+
+                "      " + GetTileValueAt((byte)0, GetTileAndItsNeighbours(4)) + " " +
+                GetTileValueAt((byte)0, GetTileAndItsNeighbours(5)) + " " +
+                GetTileValueAt((byte)0, GetTileAndItsNeighbours(6)) + " " +
+                GetTileValueAt((byte)0, GetTileAndItsNeighbours(7)) + " " +
+                GetTileValueAt((byte)0, GetTileAndItsNeighbours(8)) + "\n" +
+
+                "        " + GetTileValueAt((byte)0, GetTileAndItsNeighbours(1)) + " " +
+                GetTileValueAt((byte)0, GetTileAndItsNeighbours(2)) + " " +
+                GetTileValueAt((byte)0, GetTileAndItsNeighbours(3)) + "\n" +
+
+                "          " + GetTileValueAt((byte)0, GetTileAndItsNeighbours(0));
+    }
+
     public BoardData() {
         SetTile((byte)0, (byte)1);
         SetTile((byte)1, (byte)1);
@@ -13,9 +58,6 @@ public class BoardData {
         SetTile((byte)25, (byte)2);
         SetTile((byte)26, (byte)2);
         SetTile((byte)27, (byte)2);
-
-        GetTileValueWithoutNeighbours(GetTileAndItsNeighbours(26));
-        GetTileValueWithoutNeighbours(GetTileAndItsNeighbours(28));
 
         SetTile((byte)24, (byte)3);
         SetTile((byte)33, (byte)3);
@@ -38,164 +80,59 @@ public class BoardData {
     }
 
     public byte GetTileAndItsNeighbours(byte index){
-        switch (index){
-            case 0: return (byte)(((BIT_INDEX_MASKS[0] & _data[0]) << 6) | ((BIT_INDEX_MASKS[2] & _data[0]) >>>0));
-            case 1: return (byte)(((BIT_INDEX_MASKS[1] & _data[0]) << 4) | ((BIT_INDEX_MASKS[1] & _data[1]) << 2) | ((BIT_INDEX_MASKS[2] & _data[0]) >>>2));
-            case 2: return (byte)(((BIT_INDEX_MASKS[2] & _data[0]) << 2) | ((BIT_INDEX_MASKS[0] & _data[0]) << 4) | ((BIT_INDEX_MASKS[1] & _data[0]) >>>0) | ((BIT_INDEX_MASKS[3] & _data[0]) >>>6));
-            case 3: return (byte)(((BIT_INDEX_MASKS[3] & _data[0]) >>>0) | ((BIT_INDEX_MASKS[2] & _data[0]) >>>0) | ((BIT_INDEX_MASKS[3] & _data[1]) >>>4));
-            case 4: return (byte)(((BIT_INDEX_MASKS[0] & _data[1]) << 6) | ((BIT_INDEX_MASKS[1] & _data[1]) << 2) | ((BIT_INDEX_MASKS[2] & _data[2]) >>>2));
-            case 5: return (byte)(((BIT_INDEX_MASKS[1] & _data[1]) << 4) | ((BIT_INDEX_MASKS[0] & _data[1]) << 4) | ((BIT_INDEX_MASKS[1] & _data[0]) >>>0) | ((BIT_INDEX_MASKS[2] & _data[1]) >>>4));
-            case 6: return (byte)(((BIT_INDEX_MASKS[2] & _data[1]) << 2) | ((BIT_INDEX_MASKS[1] & _data[1]) << 2) | ((BIT_INDEX_MASKS[3] & _data[1]) >>>4) | ((BIT_INDEX_MASKS[0] & _data[3]) >>>0));
-            case 7: return (byte)(((BIT_INDEX_MASKS[3] & _data[1]) >>>0) | ((BIT_INDEX_MASKS[2] & _data[1]) >>>0) | ((BIT_INDEX_MASKS[3] & _data[0]) >>>4) | ((BIT_INDEX_MASKS[0] & _data[2]) >>>0));
-            case 8: return (byte)(((BIT_INDEX_MASKS[0] & _data[2]) << 6) | ((BIT_INDEX_MASKS[3] & _data[1]) >>>2) | ((BIT_INDEX_MASKS[2] & _data[3]) >>>2));
-            case 9: return (byte)(((BIT_INDEX_MASKS[1] & _data[2]) << 4) | ((BIT_INDEX_MASKS[2] & _data[2]) >>>0) | ((BIT_INDEX_MASKS[1] & _data[4]) >>>0));
-            case 10: return (byte)(((BIT_INDEX_MASKS[2] & _data[2]) << 2) | ((BIT_INDEX_MASKS[1] & _data[2]) << 2) | ((BIT_INDEX_MASKS[0] & _data[1]) << 2) | ((BIT_INDEX_MASKS[3] & _data[2]) >>>6));
-            case 11: return (byte)(((BIT_INDEX_MASKS[3] & _data[2]) >>>0) | ((BIT_INDEX_MASKS[2] & _data[2]) >>>0) | ((BIT_INDEX_MASKS[0] & _data[3]) << 2) | ((BIT_INDEX_MASKS[3] & _data[4]) >>>6));
-            case 12: return (byte)(((BIT_INDEX_MASKS[0] & _data[3]) << 6) | ((BIT_INDEX_MASKS[3] & _data[2]) >>>2) | ((BIT_INDEX_MASKS[2] & _data[1]) >>>2) | ((BIT_INDEX_MASKS[1] & _data[3]) >>>2));
-            case 13: return (byte)(((BIT_INDEX_MASKS[1] & _data[3]) << 4) | ((BIT_INDEX_MASKS[0] & _data[3]) << 4) | ((BIT_INDEX_MASKS[1] & _data[5]) >>>0) | ((BIT_INDEX_MASKS[2] & _data[3]) >>>4));
-            case 14: return (byte)(((BIT_INDEX_MASKS[2] & _data[3]) << 2) | ((BIT_INDEX_MASKS[1] & _data[3]) << 2) | ((BIT_INDEX_MASKS[0] & _data[2]) << 2) | ((BIT_INDEX_MASKS[3] & _data[3]) >>>6));
-            case 15: return (byte)(((BIT_INDEX_MASKS[3] & _data[3]) >>>0) | ((BIT_INDEX_MASKS[2] & _data[3]) >>>0) | ((BIT_INDEX_MASKS[3] & _data[5]) >>>4));
-            case 16: return (byte)(((BIT_INDEX_MASKS[0] & _data[4]) << 6) | ((BIT_INDEX_MASKS[1] & _data[4]) << 2) | ((BIT_INDEX_MASKS[2] & _data[6]) >>>2));
-            case 17: return (byte)(((BIT_INDEX_MASKS[1] & _data[4]) << 4) | ((BIT_INDEX_MASKS[0] & _data[4]) << 4) | ((BIT_INDEX_MASKS[1] & _data[2]) >>>0) | ((BIT_INDEX_MASKS[2] & _data[4]) >>>4));
-            case 18: return (byte)(((BIT_INDEX_MASKS[2] & _data[4]) << 2) | ((BIT_INDEX_MASKS[1] & _data[4]) << 2) | ((BIT_INDEX_MASKS[0] & _data[7]) << 2) | ((BIT_INDEX_MASKS[3] & _data[4]) >>>6));
-            case 19: return (byte)(((BIT_INDEX_MASKS[3] & _data[4]) >>>0) | ((BIT_INDEX_MASKS[2] & _data[4]) >>>0) | ((BIT_INDEX_MASKS[3] & _data[2]) >>>4) | ((BIT_INDEX_MASKS[0] & _data[5]) >>>0));
-            case 20: return (byte)(((BIT_INDEX_MASKS[0] & _data[5]) << 6) | ((BIT_INDEX_MASKS[3] & _data[4]) >>>2) | ((BIT_INDEX_MASKS[2] & _data[7]) >>>2) | ((BIT_INDEX_MASKS[1] & _data[5]) >>>2));
-            case 21: return (byte)(((BIT_INDEX_MASKS[1] & _data[5]) << 4) | ((BIT_INDEX_MASKS[0] & _data[5]) << 4) | ((BIT_INDEX_MASKS[1] & _data[3]) >>>0) | ((BIT_INDEX_MASKS[2] & _data[5]) >>>4));
-            case 22: return (byte)(((BIT_INDEX_MASKS[2] & _data[5]) << 2) | ((BIT_INDEX_MASKS[1] & _data[5]) << 2) | ((BIT_INDEX_MASKS[0] & _data[8]) << 2) | ((BIT_INDEX_MASKS[3] & _data[5]) >>>6));
-            case 23: return (byte)(((BIT_INDEX_MASKS[3] & _data[5]) >>>0) | ((BIT_INDEX_MASKS[2] & _data[5]) >>>0) | ((BIT_INDEX_MASKS[3] & _data[3]) >>>4) | ((BIT_INDEX_MASKS[0] & _data[6]) >>>0));
-            case 24: return (byte)(((BIT_INDEX_MASKS[0] & _data[6]) << 6) | ((BIT_INDEX_MASKS[3] & _data[5]) >>>2) | ((BIT_INDEX_MASKS[2] & _data[8]) >>>2));
-            case 25: return (byte)(((BIT_INDEX_MASKS[1] & _data[6]) << 4) | ((BIT_INDEX_MASKS[2] & _data[6]) >>>0));
-            case 26:
-                var a = ((BIT_INDEX_MASKS[2] & _data[6]) << 2);
-                var b = ((BIT_INDEX_MASKS[1] & _data[6]) << 2);
-                var c = ((BIT_INDEX_MASKS[0] & _data[4]) << 2);
-                var d = ((byte)(BIT_INDEX_MASKS[3] & _data[6]) >>> 6);
-                var e = a | b | c | d;
+        var byteIndex = index / 4;
+        var bitIndex = index % 4;
 
+        var neighboursIndices = Board.NEIGHBOUR_MAP[index];
 
-                return (byte)(((BIT_INDEX_MASKS[2] & _data[6]) << 2) | ((BIT_INDEX_MASKS[1] & _data[6]) << 2) | ((BIT_INDEX_MASKS[0] & _data[4]) << 2) | ((BIT_INDEX_MASKS[3] & _data[6]) >>>6));
-            case 27: return (byte)(((BIT_INDEX_MASKS[3] & _data[6]) >>>0) | ((BIT_INDEX_MASKS[2] & _data[6]) >>>0) | ((BIT_INDEX_MASKS[0] & _data[7]) << 2));
-            case 28: return (byte)(((BIT_INDEX_MASKS[0] & _data[7]) << 6) | ((BIT_INDEX_MASKS[3] & _data[6]) >>>2) | ((BIT_INDEX_MASKS[2] & _data[4]) >>>2) | ((BIT_INDEX_MASKS[1] & _data[7]) >>>2));
-            case 29: return (byte)(((BIT_INDEX_MASKS[1] & _data[7]) << 4) | ((BIT_INDEX_MASKS[0] & _data[7]) << 4) | ((BIT_INDEX_MASKS[2] & _data[7]) >>>2));
-            case 30: return (byte)(((BIT_INDEX_MASKS[2] & _data[7]) << 2) | ((BIT_INDEX_MASKS[1] & _data[7]) << 2) | ((BIT_INDEX_MASKS[0] & _data[5]) << 2) | ((BIT_INDEX_MASKS[3] & _data[7]) >>>6));
-            case 31: return (byte)(((BIT_INDEX_MASKS[3] & _data[7]) >>>0) | ((BIT_INDEX_MASKS[2] & _data[7]) >>>0) | ((BIT_INDEX_MASKS[0] & _data[8]) << 2));
-            case 32: return (byte)(((BIT_INDEX_MASKS[0] & _data[8]) << 6) | ((BIT_INDEX_MASKS[3] & _data[7]) >>>2) | ((BIT_INDEX_MASKS[2] & _data[5]) >>>2) | ((BIT_INDEX_MASKS[1] & _data[8]) >>>2));
-            case 33: return (byte)(((BIT_INDEX_MASKS[1] & _data[8]) << 4) | ((BIT_INDEX_MASKS[0] & _data[8]) << 4) | ((BIT_INDEX_MASKS[2] & _data[8]) >>>2));
-            case 34: return (byte)(((BIT_INDEX_MASKS[2] & _data[8]) << 2) | ((BIT_INDEX_MASKS[1] & _data[8]) << 2) | ((BIT_INDEX_MASKS[0] & _data[6]) << 2) | ((BIT_INDEX_MASKS[3] & _data[8]) >>>6));
-            case 35: return (byte)(((BIT_INDEX_MASKS[3] & _data[8]) >>>0) | ((BIT_INDEX_MASKS[2] & _data[8]) >>>0));
+        //tileValue shifted to Left
+        var result = (byte) (BIT_INDEX_MASKS[3] & (_data[byteIndex] << (6 - (bitIndex * 2))));
+
+        for(byte i = 0; i != neighboursIndices.length; i++){
+            byteIndex = neighboursIndices[i] / 4;
+            bitIndex = neighboursIndices[i] % 4;
+
+            var mask = BIT_INDEX_MASKS[2 - i];
+            var byteData = (int)_data[byteIndex];
+            var shiftDigits = (byte) (4 - ((bitIndex + i) * 2));
+            
+            var shiftedByteData = shiftDigits > 0 ? (byteData << shiftDigits) : (byteData >> Math.abs(shiftDigits));
+
+            var neighbourBit = (byte) (mask & shiftedByteData);
+            result |= neighbourBit;
         }
-
-        return TILE_AND_ITS_NEIGHBOURS[index];
+        return result;
     }
     public byte GetTileAndItsNeighbours(int index){
         return GetTileAndItsNeighbours((byte)index);
+    }
+
+    public byte GetTileWithoutNeighbours(int index){
+        return GetTileValueAt((byte) 0, GetTileAndItsNeighbours(index));
     }
 
     public byte[] GetDataClone(){
         return _data.clone();
     }
 
-    @Override
-    public String toString() {
-        return  GetTileValueWithoutNeighbours(GetTileAndItsNeighbours(25)) + " " +
-                GetTileValueWithoutNeighbours(GetTileAndItsNeighbours(26)) + " " +
-                GetTileValueWithoutNeighbours(GetTileAndItsNeighbours(27)) + " " +
-                GetTileValueWithoutNeighbours(GetTileAndItsNeighbours(28)) + " " +
-                GetTileValueWithoutNeighbours(GetTileAndItsNeighbours(29)) + " " +
-                GetTileValueWithoutNeighbours(GetTileAndItsNeighbours(30)) + " " +
-                GetTileValueWithoutNeighbours(GetTileAndItsNeighbours(31)) + " " +
-                GetTileValueWithoutNeighbours(GetTileAndItsNeighbours(32)) + " " +
-                GetTileValueWithoutNeighbours(GetTileAndItsNeighbours(33)) + " " +
-                GetTileValueWithoutNeighbours(GetTileAndItsNeighbours(34)) + " " +
-                GetTileValueWithoutNeighbours(GetTileAndItsNeighbours(35)) + "\n" +
-
-                GetTileValueWithoutNeighbours(GetTileAndItsNeighbours(16)) + " " +
-                GetTileValueWithoutNeighbours(GetTileAndItsNeighbours(17)) + " " +
-                GetTileValueWithoutNeighbours(GetTileAndItsNeighbours(18)) + " " +
-                GetTileValueWithoutNeighbours(GetTileAndItsNeighbours(19)) + " " +
-                GetTileValueWithoutNeighbours(GetTileAndItsNeighbours(20)) + " " +
-                GetTileValueWithoutNeighbours(GetTileAndItsNeighbours(21)) + " " +
-                GetTileValueWithoutNeighbours(GetTileAndItsNeighbours(22)) + " " +
-                GetTileValueWithoutNeighbours(GetTileAndItsNeighbours(23)) + " " +
-                GetTileValueWithoutNeighbours(GetTileAndItsNeighbours(24)) + "\n" +
-
-                GetTileValueWithoutNeighbours(GetTileAndItsNeighbours(9)) + " " +
-                GetTileValueWithoutNeighbours(GetTileAndItsNeighbours(10)) + " " +
-                GetTileValueWithoutNeighbours(GetTileAndItsNeighbours(11)) + " " +
-                GetTileValueWithoutNeighbours(GetTileAndItsNeighbours(12)) + " " +
-                GetTileValueWithoutNeighbours(GetTileAndItsNeighbours(13)) + " " +
-                GetTileValueWithoutNeighbours(GetTileAndItsNeighbours(14)) + " " +
-                GetTileValueWithoutNeighbours(GetTileAndItsNeighbours(15)) + "\n" +
-
-                GetTileValueWithoutNeighbours(GetTileAndItsNeighbours(4)) + " " +
-                GetTileValueWithoutNeighbours(GetTileAndItsNeighbours(5)) + " " +
-                GetTileValueWithoutNeighbours(GetTileAndItsNeighbours(6)) + " " +
-                GetTileValueWithoutNeighbours(GetTileAndItsNeighbours(7)) + " " +
-                GetTileValueWithoutNeighbours(GetTileAndItsNeighbours(8)) + "\n" +
-
-                GetTileValueWithoutNeighbours(GetTileAndItsNeighbours(1)) + " " +
-                GetTileValueWithoutNeighbours(GetTileAndItsNeighbours(2)) + " " +
-                GetTileValueWithoutNeighbours(GetTileAndItsNeighbours(3)) + "\n" +
-
-                GetTileValueWithoutNeighbours(GetTileAndItsNeighbours(0));
-    }
-
-    public static byte GetTileValueWithoutNeighbours(byte tileAndItsNeighbours){
-        return (byte)((tileAndItsNeighbours >>>6) & BIT_INDEX_MASKS[0]);
-    }
-
     //left to right
-    //index 0 : 00110000
-    //index 1 : 00001100
-    //index 2 : 00000011
-    public static byte GetNeighboursValueAt(byte index, byte tileAndItsNeighbours){
-        return (byte) ((tileAndItsNeighbours & BIT_INDEX_MASKS[2-index]) >>>((2-index)*2));
+    //index 0 : 11000000
+    //index 1 : 00110000
+    //index 2 : 00001100
+    //index 3 : 00000011
+    public static byte GetTileValueAt(byte index, byte tileAndItsNeighbours){
+        return (byte) ((tileAndItsNeighbours >> (6 - (index * 2))) & BIT_INDEX_MASKS[0]);
+    }
+
+    public static byte GetTileValueAt(int index, byte tileAndItsNeighbours){
+        return GetTileValueAt((byte) index, tileAndItsNeighbours);
     }
 
 
-    public static final byte[] BIT_INDEX_MASKS = {
-            (byte)0b00000011,
-            (byte)0b00001100,
-            (byte)0b00110000,
-            (byte)0b11000000,
-    };
-
-    private final byte[] TILE_AND_ITS_NEIGHBOURS = {
-            (byte)(((BIT_INDEX_MASKS[0] & _data[0]) << 6) | ((BIT_INDEX_MASKS[2] & _data[0]) >>>0)),
-            (byte)(((BIT_INDEX_MASKS[1] & _data[0]) << 4) | ((BIT_INDEX_MASKS[1] & _data[1]) << 2) | ((BIT_INDEX_MASKS[2] & _data[0]) >>>2)),
-            (byte)(((BIT_INDEX_MASKS[2] & _data[0]) << 2) | ((BIT_INDEX_MASKS[0] & _data[0]) << 4) | ((BIT_INDEX_MASKS[1] & _data[0]) >>>0) | ((BIT_INDEX_MASKS[3] & _data[0]) >>>6)),
-            (byte)(((BIT_INDEX_MASKS[3] & _data[0]) >>>0) | ((BIT_INDEX_MASKS[2] & _data[0]) >>>0) | ((BIT_INDEX_MASKS[3] & _data[1]) >>>4)),
-            (byte)(((BIT_INDEX_MASKS[0] & _data[1]) << 6) | ((BIT_INDEX_MASKS[1] & _data[1]) << 2) | ((BIT_INDEX_MASKS[2] & _data[2]) >>>2)),
-            (byte)(((BIT_INDEX_MASKS[1] & _data[1]) << 4) | ((BIT_INDEX_MASKS[0] & _data[1]) << 4) | ((BIT_INDEX_MASKS[1] & _data[0]) >>>0) | ((BIT_INDEX_MASKS[2] & _data[1]) >>>4)),
-            (byte)(((BIT_INDEX_MASKS[2] & _data[1]) << 2) | ((BIT_INDEX_MASKS[1] & _data[1]) << 2) | ((BIT_INDEX_MASKS[3] & _data[1]) >>>4) | ((BIT_INDEX_MASKS[0] & _data[3]) >>>0)),
-            (byte)(((BIT_INDEX_MASKS[3] & _data[1]) >>>0) | ((BIT_INDEX_MASKS[2] & _data[1]) >>>0) | ((BIT_INDEX_MASKS[3] & _data[0]) >>>4) | ((BIT_INDEX_MASKS[0] & _data[2]) >>>0)),
-            (byte)(((BIT_INDEX_MASKS[0] & _data[2]) << 6) | ((BIT_INDEX_MASKS[3] & _data[1]) >>>2) | ((BIT_INDEX_MASKS[2] & _data[3]) >>>2)),
-            (byte)(((BIT_INDEX_MASKS[1] & _data[2]) << 4) | ((BIT_INDEX_MASKS[2] & _data[2]) >>>0) | ((BIT_INDEX_MASKS[1] & _data[4]) >>>0)),
-            (byte)(((BIT_INDEX_MASKS[2] & _data[2]) << 2) | ((BIT_INDEX_MASKS[1] & _data[2]) << 2) | ((BIT_INDEX_MASKS[0] & _data[1]) << 2) | ((BIT_INDEX_MASKS[3] & _data[2]) >>>6)),
-            (byte)(((BIT_INDEX_MASKS[3] & _data[2]) >>>0) | ((BIT_INDEX_MASKS[2] & _data[2]) >>>0) | ((BIT_INDEX_MASKS[0] & _data[3]) << 2) | ((BIT_INDEX_MASKS[3] & _data[4]) >>>6)),
-            (byte)(((BIT_INDEX_MASKS[0] & _data[3]) << 6) | ((BIT_INDEX_MASKS[3] & _data[2]) >>>2) | ((BIT_INDEX_MASKS[2] & _data[1]) >>>2) | ((BIT_INDEX_MASKS[1] & _data[3]) >>>2)),
-            (byte)(((BIT_INDEX_MASKS[1] & _data[3]) << 4) | ((BIT_INDEX_MASKS[0] & _data[3]) << 4) | ((BIT_INDEX_MASKS[1] & _data[5]) >>>0) | ((BIT_INDEX_MASKS[2] & _data[3]) >>>4)),
-            (byte)(((BIT_INDEX_MASKS[2] & _data[3]) << 2) | ((BIT_INDEX_MASKS[1] & _data[3]) << 2) | ((BIT_INDEX_MASKS[0] & _data[2]) << 2) | ((BIT_INDEX_MASKS[3] & _data[3]) >>>6)),
-            (byte)(((BIT_INDEX_MASKS[3] & _data[3]) >>>0) | ((BIT_INDEX_MASKS[2] & _data[3]) >>>0) | ((BIT_INDEX_MASKS[3] & _data[5]) >>>4)),
-            (byte)(((BIT_INDEX_MASKS[0] & _data[4]) << 6) | ((BIT_INDEX_MASKS[1] & _data[4]) << 2) | ((BIT_INDEX_MASKS[2] & _data[6]) >>>2)),
-            (byte)(((BIT_INDEX_MASKS[1] & _data[4]) << 4) | ((BIT_INDEX_MASKS[0] & _data[4]) << 4) | ((BIT_INDEX_MASKS[1] & _data[2]) >>>0) | ((BIT_INDEX_MASKS[2] & _data[4]) >>>4)),
-            (byte)(((BIT_INDEX_MASKS[2] & _data[4]) << 2) | ((BIT_INDEX_MASKS[1] & _data[4]) << 2) | ((BIT_INDEX_MASKS[0] & _data[7]) << 2) | ((BIT_INDEX_MASKS[3] & _data[4]) >>>6)),
-            (byte)(((BIT_INDEX_MASKS[3] & _data[4]) >>>0) | ((BIT_INDEX_MASKS[2] & _data[4]) >>>0) | ((BIT_INDEX_MASKS[3] & _data[2]) >>>4) | ((BIT_INDEX_MASKS[0] & _data[5]) >>>0)),
-            (byte)(((BIT_INDEX_MASKS[0] & _data[5]) << 6) | ((BIT_INDEX_MASKS[3] & _data[4]) >>>2) | ((BIT_INDEX_MASKS[2] & _data[7]) >>>2) | ((BIT_INDEX_MASKS[1] & _data[5]) >>>2)),
-            (byte)(((BIT_INDEX_MASKS[1] & _data[5]) << 4) | ((BIT_INDEX_MASKS[0] & _data[5]) << 4) | ((BIT_INDEX_MASKS[1] & _data[3]) >>>0) | ((BIT_INDEX_MASKS[2] & _data[5]) >>>4)),
-            (byte)(((BIT_INDEX_MASKS[2] & _data[5]) << 2) | ((BIT_INDEX_MASKS[1] & _data[5]) << 2) | ((BIT_INDEX_MASKS[0] & _data[8]) << 2) | ((BIT_INDEX_MASKS[3] & _data[5]) >>>6)),
-            (byte)(((BIT_INDEX_MASKS[3] & _data[5]) >>>0) | ((BIT_INDEX_MASKS[2] & _data[5]) >>>0) | ((BIT_INDEX_MASKS[3] & _data[3]) >>>4) | ((BIT_INDEX_MASKS[0] & _data[6]) >>>0)),
-            (byte)(((BIT_INDEX_MASKS[0] & _data[6]) << 6) | ((BIT_INDEX_MASKS[3] & _data[5]) >>>2) | ((BIT_INDEX_MASKS[2] & _data[8]) >>>2)),
-            (byte)(((BIT_INDEX_MASKS[1] & _data[6]) << 4) | ((BIT_INDEX_MASKS[2] & _data[6]) >>>0)),
-            (byte)(((BIT_INDEX_MASKS[2] & _data[6]) << 2) | ((BIT_INDEX_MASKS[1] & _data[6]) << 2) | ((BIT_INDEX_MASKS[0] & _data[4]) << 2) | ((BIT_INDEX_MASKS[3] & _data[6]) >>>6)),
-            (byte)(((BIT_INDEX_MASKS[3] & _data[6]) >>>0) | ((BIT_INDEX_MASKS[2] & _data[6]) >>>0) | ((BIT_INDEX_MASKS[0] & _data[7]) << 2)),
-            (byte)(((BIT_INDEX_MASKS[0] & _data[7]) << 6) | ((BIT_INDEX_MASKS[3] & _data[6]) >>>2) | ((BIT_INDEX_MASKS[2] & _data[4]) >>>2) | ((BIT_INDEX_MASKS[1] & _data[7]) >>>2)),
-            (byte)(((BIT_INDEX_MASKS[1] & _data[7]) << 4) | ((BIT_INDEX_MASKS[0] & _data[7]) << 4) | ((BIT_INDEX_MASKS[2] & _data[7]) >>>2)),
-            (byte)(((BIT_INDEX_MASKS[2] & _data[7]) << 2) | ((BIT_INDEX_MASKS[1] & _data[7]) << 2) | ((BIT_INDEX_MASKS[0] & _data[5]) << 2) | ((BIT_INDEX_MASKS[3] & _data[7]) >>>6)),
-            (byte)(((BIT_INDEX_MASKS[3] & _data[7]) >>>0) | ((BIT_INDEX_MASKS[2] & _data[7]) >>>0) | ((BIT_INDEX_MASKS[0] & _data[8]) << 2)),
-            (byte)(((BIT_INDEX_MASKS[0] & _data[8]) << 6) | ((BIT_INDEX_MASKS[3] & _data[7]) >>>2) | ((BIT_INDEX_MASKS[2] & _data[5]) >>>2) | ((BIT_INDEX_MASKS[1] & _data[8]) >>>2)),
-            (byte)(((BIT_INDEX_MASKS[1] & _data[8]) << 4) | ((BIT_INDEX_MASKS[0] & _data[8]) << 4) | ((BIT_INDEX_MASKS[2] & _data[8]) >>>2)),
-            (byte)(((BIT_INDEX_MASKS[2] & _data[8]) << 2) | ((BIT_INDEX_MASKS[1] & _data[8]) << 2) | ((BIT_INDEX_MASKS[0] & _data[6]) << 2) | ((BIT_INDEX_MASKS[3] & _data[8]) >>>6)),
-            (byte)(((BIT_INDEX_MASKS[3] & _data[8]) >>>0) | ((BIT_INDEX_MASKS[2] & _data[8]) >>>0)),
+    public static final int[] BIT_INDEX_MASKS = {
+            0b00000011,
+            0b00001100,
+            0b00110000,
+            0b11000000,
     };
 }

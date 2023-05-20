@@ -5,10 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="466d7ca1-e518-406b-97e3-57fce278f640" name="Changes" comment="Hasingstuff not finished">
+      <change afterPath="$PROJECT_DIR$/src/AStart/AStarAlgorithm.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/AStart/TileNode.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Scripts/ClientModels/MainClient.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Utilities/AlphaBetaSearch.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Utilities/ClientStarter.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Scripts/ClientModels/RandomClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Scripts/ClientModels/RandomClient.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/libary/loki.jar" beforeDir="false" afterPath="$PROJECT_DIR$/libary/loki.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Scripts/ClientModels/RandomClient.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Utilities/Board.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Utilities/Board.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Utilities/BoardData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Utilities/BoardData.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Utilities/PlayerNumber.java" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -69,9 +76,9 @@
       <recent name="H:\Documents\AI\AI-Java\Scripts" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.Clients">
+  <component name="RunManager">
     <configuration name="Clients" type="Application" factoryName="Application" singleton="false">
-      <option name="MAIN_CLASS_NAME" value="Scripts.ClientModels.RandomClient" />
+      <option name="MAIN_CLASS_NAME" value="Utilities.ClientStarter" />
       <module name="AI-Java" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -101,8 +108,8 @@
     </configuration>
     <list>
       <item itemvalue="Application.Clients" />
-      <item itemvalue="JAR Application.ServerStartUni" />
       <item itemvalue="JAR Application.ServerStartHome" />
+      <item itemvalue="JAR Application.ServerStartUni" />
     </list>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
@@ -128,6 +135,19 @@
       <workItem from="1682600508582" duration="14176000" />
       <workItem from="1682773254961" duration="4000" />
       <workItem from="1682975539736" duration="2000" />
+      <workItem from="1683379138813" duration="5419000" />
+      <workItem from="1683633717365" duration="251000" />
+      <workItem from="1683720285030" duration="1000" />
+      <workItem from="1683924484378" duration="4028000" />
+      <workItem from="1684230938671" duration="4692000" />
+      <workItem from="1684259637038" duration="3000" />
+      <workItem from="1684315898213" duration="10132000" />
+      <workItem from="1684349253937" duration="1803000" />
+      <workItem from="1684353256329" duration="6553000" />
+      <workItem from="1684402075542" duration="4834000" />
+      <workItem from="1684411805523" duration="348000" />
+      <workItem from="1684584314443" duration="12609000" />
+      <workItem from="1684605784936" duration="1952000" />
     </task>
     <task id="LOCAL-00001" summary="Adding some basics">
       <created>1681919191419</created>
@@ -190,24 +210,18 @@
     <option name="LAST_COMMIT_MESSAGE" value="Hasingstuff not finished" />
   </component>
   <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/Utilities/Board.java</url>
-          <line>199</line>
-          <option name="timeStamp" value="8" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/Utilities/Board.java</url>
-          <line>108</line>
-          <option name="timeStamp" value="12" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
     <watches-manager>
       <configuration name="Application">
         <watch expression="indices_MyTilesAndTheirNeighbours.get(0)[1]" />
         <watch expression="indices_MyTilesAndTheirNeighbours.get(1)[1]" />
+        <watch expression="indices_MyTilesAndTheirNeighbours.get(0)[0]" />
+        <watch expression="indices_MyTilesAndTheirNeighbours.get(0)[1]" />
+        <watch expression="indices_MyTilesAndTheirNeighbours.get(1)[0]" />
+        <watch expression="indices_MyTilesAndTheirNeighbours.get(1)[1]" />
+        <watch expression="indices_MyTilesAndTheirNeighbours.get(2)[1]" />
+        <watch expression="indices_MyTilesAndTheirNeighbours.get(2)[0]" />
+        <watch expression="indices_MyTilesAndTheirNeighbours.get(3)[0]" />
+        <watch expression="indices_MyTilesAndTheirNeighbours.get(3)[1]" language="JAVA" />
       </configuration>
     </watches-manager>
   </component>

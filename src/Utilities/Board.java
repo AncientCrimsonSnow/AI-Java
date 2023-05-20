@@ -9,73 +9,100 @@ public class Board {
 
     private static final byte  TILE_COUNT = 36;
     private final BoardData _board;
-    private final PlayerNumber _perspective;
+    private final int _perspective;
 
     private byte[] _perspectiveMapOut;
     private byte[] _perspectiveMapIn;
 
+    private byte[] _perspectivePlayNumberMapOut;
+    private byte[] _perspectivePlayNumberMapIn;
+
     private byte _stoneCount = 4;
 
-    public Board(PlayerNumber perspective) {
+    public Board(int perspective) {
 
         _perspective = perspective;
 
         switch (_perspective) {
-            case p0:
+            case 0:
                 _perspectiveMapIn = PLAYER_0_PERSPECTIVE_MAP;
                 _perspectiveMapOut = PLAYER_0_PERSPECTIVE_MAP;
+                _perspectivePlayNumberMapOut = PLAYER_0_PERSPECTIVE_PLAYERNUMBER_MAP;
+                _perspectivePlayNumberMapIn = PLAYER_0_PERSPECTIVE_PLAYERNUMBER_MAP;
                 break;
-            case p1:
+            case 1:
                 _perspectiveMapIn = PLAYER_2_PERSPECTIVE_MAP;
                 _perspectiveMapOut = PLAYER_1_PERSPECTIVE_MAP;
+                _perspectivePlayNumberMapOut = PLAYER_2_PERSPECTIVE_PLAYERNUMBER_MAP;
+                _perspectivePlayNumberMapIn = PLAYER_1_PERSPECTIVE_PLAYERNUMBER_MAP;
                 break;
             default:
                 _perspectiveMapIn = PLAYER_1_PERSPECTIVE_MAP;
                 _perspectiveMapOut = PLAYER_2_PERSPECTIVE_MAP;
+                _perspectivePlayNumberMapOut = PLAYER_1_PERSPECTIVE_PLAYERNUMBER_MAP;
+                _perspectivePlayNumberMapIn = PLAYER_2_PERSPECTIVE_PLAYERNUMBER_MAP;
                 break;
         }
         _board = new BoardData();
     }
 
-    public Board(PlayerNumber perspective, BoardData board) {
+    public Board(int perspective, BoardData board) {
 
         _perspective = perspective;
 
         switch (_perspective) {
-            case p0:
+            case 0:
                 _perspectiveMapIn = PLAYER_0_PERSPECTIVE_MAP;
                 _perspectiveMapOut = PLAYER_0_PERSPECTIVE_MAP;
+                _perspectivePlayNumberMapOut = PLAYER_0_PERSPECTIVE_PLAYERNUMBER_MAP;
+                _perspectivePlayNumberMapIn = PLAYER_0_PERSPECTIVE_PLAYERNUMBER_MAP;
                 break;
-            case p1:
+            case 1:
                 _perspectiveMapIn = PLAYER_2_PERSPECTIVE_MAP;
                 _perspectiveMapOut = PLAYER_1_PERSPECTIVE_MAP;
+                _perspectivePlayNumberMapOut = PLAYER_2_PERSPECTIVE_PLAYERNUMBER_MAP;
+                _perspectivePlayNumberMapIn = PLAYER_1_PERSPECTIVE_PLAYERNUMBER_MAP;
                 break;
-            case p2:
+            default:
                 _perspectiveMapIn = PLAYER_1_PERSPECTIVE_MAP;
                 _perspectiveMapOut = PLAYER_2_PERSPECTIVE_MAP;
+                _perspectivePlayNumberMapOut = PLAYER_1_PERSPECTIVE_PLAYERNUMBER_MAP;
+                _perspectivePlayNumberMapIn = PLAYER_2_PERSPECTIVE_PLAYERNUMBER_MAP;
+                break;
         }
-        _board = board;
+        _board = new BoardData();
+        for (byte i = 0; i != TILE_COUNT; i++) {
+            var tile = board.GetTileWithoutNeighbours(i);
+            _board.SetTile( _perspectiveMapIn[i], _perspectivePlayNumberMapIn[tile]);
+        }
+
+        UpdateStoneCount();
     }
 
     public void UpdateBoard(Move move){
         var perspectiveMoveFrom = _perspectiveMapIn[move.from];
         var perspectiveMoveTo = _perspectiveMapIn[move.to];
 
-        var moveFromTile = _board.GetTileAndItsNeighbours(perspectiveMoveFrom) >> 6;
-        var moveToTile = _board.GetTileAndItsNeighbours(perspectiveMoveTo) >> 6;
+        var moveFromTile = _board.GetTileAndItsNeighbours(perspectiveMoveFrom);
+        var moveToTile = _board.GetTileAndItsNeighbours(perspectiveMoveTo);
 
         _board.SetTile(perspectiveMoveFrom, 0);
-        _board.SetTile(perspectiveMoveTo, moveFromTile);
+        _board.SetTile(perspectiveMoveTo, BoardData.GetTileValueAt(0, moveFromTile));
 
-        if(move.push <= 35){
-            _board.SetTile(_perspectiveMapIn[move.push], moveToTile);
+        if(move.push < TILE_COUNT){
+            _board.SetTile(_perspectiveMapIn[move.push], BoardData.GetTileValueAt(0, moveToTile));
         }
 
         CheckTilesForLoneliness();
     }
 
-    public byte[] GetBoard(){
-        return _board.GetDataClone();
+    public BoardData GetBoard(){
+        var result = new BoardData();
+        for (byte i = 0; i != TILE_COUNT; i++) {
+            var tile = _board.GetTileWithoutNeighbours(i);
+                result.SetTile( _perspectiveMapOut[i], _perspectivePlayNumberMapOut[tile]);
+        }
+        return result;
     }
 
     public boolean DeadBoard(){
@@ -85,7 +112,7 @@ public class Board {
     public boolean WinningBoard(){
         var stonesOnFinishLine = 0;
         for(var finishTile : FINISH_LINE)
-            if((_board.GetTileAndItsNeighbours(finishTile) >> 6) == 1)
+            if(_board.GetTileWithoutNeighbours(finishTile) == 1)
                 stonesOnFinishLine++;
         return stonesOnFinishLine == 2;
     }
@@ -93,31 +120,52 @@ public class Board {
     private void CheckTilesForLoneliness(){
         for(byte i = 0; i != TILE_COUNT; i++){
             var tileAndItsNeighbours = _board.GetTileAndItsNeighbours(i);
-            var tile = (byte)(tileAndItsNeighbours >> 6);
-            if(!(
-                    (tile == ((tileAndItsNeighbours & BoardData.BIT_INDEX_MASKS[0])))       ||
-                    (tile == ((tileAndItsNeighbours & BoardData.BIT_INDEX_MASKS[1]) >> 2))  ||
-                    (tile == ((tileAndItsNeighbours & BoardData.BIT_INDEX_MASKS[2]) >> 4)))) {
+            var tile = BoardData.GetTileValueAt(0, tileAndItsNeighbours);
+
+            if(tile == 0)
+                continue;
+
+            var n1 = BoardData.GetTileValueAt(1, tileAndItsNeighbours);
+            var n2 = BoardData.GetTileValueAt(2, tileAndItsNeighbours);
+            var n3 = BoardData.GetTileValueAt(3, tileAndItsNeighbours);
+            var isLonely = (n1 != tile && n2 != tile && n3 != tile) &&
+                    !Has2EnemiesAsNeighbours(tile, n1, n2, n3);
+
+            if(isLonely){
                 _board.SetTile(i, 0);
                 if(tile == 1)
                     _stoneCount--;
+                CheckTilesForLoneliness();
             }
         }
     }
 
+    private void UpdateStoneCount(){
+        _stoneCount = 0;
+        for(byte i = 0; i != TILE_COUNT; i++){
+            var tile = _board.GetTileWithoutNeighbours(i);
+            if(tile == 1)
+                _stoneCount++;
+        }
+    }
+
     public ArrayList<Move> GetValidMoves(){
+        var result = new ArrayList<Move>();
+
+        if(DeadBoard()){
+            return result;
+        }
+
         var indices_MyTilesAndTheirNeighbours = new ArrayList<byte[]>();
 
         for(byte i = 0; i != TILE_COUNT; i++){
             var tileAndItsNeighbours = _board.GetTileAndItsNeighbours(i);
-            var tile = tileAndItsNeighbours  >> 6;
+            var tile = BoardData.GetTileValueAt(0, tileAndItsNeighbours);
             if(tile == 1){
                 //My Tile and its Neighbours
                 indices_MyTilesAndTheirNeighbours.add(new byte[]{i, tileAndItsNeighbours});
             }
         }
-
-        var result = new ArrayList<Move>();
 
         for(var index_MyTilesAndTheirNeighbours : indices_MyTilesAndTheirNeighbours){
             var myTileIndex = index_MyTilesAndTheirNeighbours[0];
@@ -127,7 +175,7 @@ public class Board {
                 var neighboursIndices = NEIGHBOUR_MAP[neighboursForTile[0]];
                 for(byte n = 0; n != neighboursIndices.length; n++){
                     var neighboursIndex = neighboursIndices[n];
-                    var neighboursValue = BoardData.GetNeighboursValueAt(n, neighboursForTile[1]);
+                    var neighboursValue = BoardData.GetTileValueAt(n + 1, neighboursForTile[1]);
 
                     if(neighboursValue == 0){
                         //hat der nachbar genug nachbarn vom eigenen Typ -> außer das myTile
@@ -138,7 +186,7 @@ public class Board {
 
                         for(byte nn = 0; nn != neighboursNeighboursIndices.length; nn++){
                             var neighboursNeighboursIndex = neighboursNeighboursIndices[nn];
-                            var neighboursNeighboursValue = BoardData.GetNeighboursValueAt(nn, neighboursNeighboursValues);
+                            var neighboursNeighboursValue = BoardData.GetTileValueAt(nn + 1, neighboursNeighboursValues);
                             if(neighboursNeighboursIndex == myTileIndex)
                                 continue;
 
@@ -163,6 +211,24 @@ public class Board {
         return result;
     }
 
+    private boolean Has2EnemiesAsNeighbours(byte n, byte n1, byte n2, byte n3) {
+        if(n == 0)
+            return false;
+        return  AreDifferentAndNotNullAndNotValue(n , n1, n2) ||
+                AreDifferentAndNotNullAndNotValue(n , n1, n3) ||
+                AreDifferentAndNotNullAndNotValue(n , n2, n3);
+    }
+
+    private boolean AreDifferentAndNotNullAndNotValue(byte n, byte n1, byte n2){
+        if(n1 == 0 || n2 == 0)
+            return false;
+
+        if(n1 == n || n2 == n)
+            return false;
+
+        return n1 != n2;
+    }
+
     private void EvaluateEnemiesTile(ArrayList<Move> result, byte myTileIndex, byte index) {
         var myTilesCount = 0;
 
@@ -174,7 +240,7 @@ public class Board {
         for(byte nn = 0; nn != neighboursNeighboursIndices.length; nn++){
 
             var neighboursNeighboursIndex = neighboursNeighboursIndices[nn];
-            var neighboursNeighboursValue = BoardData.GetNeighboursValueAt(nn, neighboursNeighboursValues);
+            var neighboursNeighboursValue = BoardData.GetTileValueAt(nn + 1, neighboursNeighboursValues);
 
             if(neighboursNeighboursIndex == myTileIndex)
                 freeSpacesIndices.add(neighboursNeighboursIndex);
@@ -184,6 +250,7 @@ public class Board {
             else if(neighboursNeighboursValue == 0)
                 freeSpacesIndices.add(neighboursNeighboursIndex);
         }
+
         if(myTilesCount > 0){
             for(var freeSpaceIndex : freeSpacesIndices){
                 result.add(new Move(_perspectiveMapOut[myTileIndex], _perspectiveMapOut[index], _perspectiveMapOut[freeSpaceIndex]));
@@ -192,13 +259,40 @@ public class Board {
     }
 
 
-    public Move GetBestMove(){
-        var validMoves = GetValidMoves();
-        var result = validMoves.get(Utilities.RandomInt(0, validMoves.size()));
-        Utilities.Log(_board);
-        Utilities.Log("N: " + validMoves.size());
+    public Move GetBestMove(int depth, float[] evaluationCoefficients){
+
+        var move = AlphaBetaSearch.GetBestMove(_board, depth, evaluationCoefficients);
+        var result = new Move(_perspectiveMapOut[move.from], _perspectiveMapOut[move.to], (move.push >= TILE_COUNT)? 255 : _perspectiveMapOut[move.push]);
+        Utilities.Log(result);
         return result;
     }
+
+    public byte DistanceToFinish(byte index){
+        return Distance_TO_FINISH[_perspectiveMapIn[index]];
+    }
+
+    private static final byte[] PLAYER_0_PERSPECTIVE_PLAYERNUMBER_MAP = {
+            0, 1, 2, 3
+    };
+
+    private static final byte[] PLAYER_1_PERSPECTIVE_PLAYERNUMBER_MAP = {
+            0, 3, 1, 2
+    };
+
+    private static final byte[] PLAYER_2_PERSPECTIVE_PLAYERNUMBER_MAP = {
+            0, 2, 3, 1
+    };
+
+    private static final byte[] Distance_TO_FINISH = {
+        10,
+        8, 9, 8,
+        6, 7, 6, 7, 6,
+        4, 5, 4, 5, 4, 5, 4,
+        2, 3, 2, 3, 2, 3, 2, 3, 2,
+        0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0
+    };
+
+
     private static final byte[] FINISH_LINE = {
         25,27,29,31,33,35
     };
