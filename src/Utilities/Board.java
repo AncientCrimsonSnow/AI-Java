@@ -260,10 +260,8 @@ public class Board {
 
 
     public Move GetBestMove(int depth, float[] evaluationCoefficients){
-
         var move = AlphaBetaSearch.GetBestMove(_board, depth, evaluationCoefficients);
         var result = new Move(_perspectiveMapOut[move.from], _perspectiveMapOut[move.to], (move.push >= TILE_COUNT)? 255 : _perspectiveMapOut[move.push]);
-        Utilities.Log(result);
         return result;
     }
 

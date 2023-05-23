@@ -154,10 +154,10 @@ public class AlphaBetaSearch {
 
         var result = (
                 +   evaluationCoefficients[0] * allPlayerTileCounts[0])                                                                                                       //MyTiles
-                +   evaluationCoefficients[1] * (allPlayerTileCounts[1] + allPlayerTileCounts[2])                                                                             //EnemyTiles;
+                -   evaluationCoefficients[1] * (allPlayerTileCounts[1] + allPlayerTileCounts[2])                                                                             //EnemyTiles;
                 +   evaluationCoefficients[2] * ((10 - myClosestDistanceToFinish) * (10 - mySecClosestDistanceToFinish))                                                      //My Distance to FinishLine
-                +   ((allPlayerTileCounts[1] <= 2)? 0 : evaluationCoefficients[3] * ((10 - player1ClosestDistanceToFinish) * (10 - player1SecClosestDistanceToFinish)))       //P1 Distance to his Finish Line
-                +   ((allPlayerTileCounts[2] <= 2)? 0 : evaluationCoefficients[3] * ((10 - player2ClosestDistanceToFinish) * (10 - player2SecClosestDistanceToFinish)));      //p2 Distance to his Finish Line
+                -   ((allPlayerTileCounts[1] <= 2)? 0 : evaluationCoefficients[3] * ((10 - player1ClosestDistanceToFinish) * (10 - player1SecClosestDistanceToFinish)))       //P1 Distance to his Finish Line
+                -   ((allPlayerTileCounts[2] <= 2)? 0 : evaluationCoefficients[3] * ((10 - player2ClosestDistanceToFinish) * (10 - player2SecClosestDistanceToFinish)));      //p2 Distance to his Finish Line
 
         return result;
     }
