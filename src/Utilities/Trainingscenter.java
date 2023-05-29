@@ -6,20 +6,23 @@ import lenz.htw.loki.Server;
 import lenz.htw.loki.net.NetworkClient;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 
 public class Trainingscenter {
 
     private static final int FREE_PORT_START_INDEX = 22135;
-    private static final int PARALLEL_GAME_COUNT = 1;
+    private static final int PARALLEL_GAME_COUNT = 12;
     private static final int CLIENT_COUNT_PER_GAME = 3;
     private static final int CLIENT_COUNT_TOTAL = CLIENT_COUNT_PER_GAME * PARALLEL_GAME_COUNT;
 
-    private static final int COEFFICIENT_CHANGES_RESET_THRESHOLD = 50;
-    private static final int ROUNDS = 3;
+    private static final float LEARNING_RATE = 0.8f;
+    private static final int COEFFICIENT_CHANGES_RESET_THRESHOLD = 9999999;
+    private static final int ROUNDS = 9;
+
+    private static final int GAME_TIMEOUT_TIME = 30;
 
     private static final Random RANDOM = new Random();
 
@@ -27,22 +30,20 @@ public class Trainingscenter {
 
 
     public static void main(String[] args) throws ExecutionException, InterruptedException {
-        MutateFloat(0.1f, 0);
-
-
         while(true){
             var crrBestEvaluationCoefficients = DeserializeEvaluationCoefficients();
 
-            var newBest = Train(ROUNDS, crrBestEvaluationCoefficients);
+            var newBest = Train(crrBestEvaluationCoefficients);
             for(var coefficientIndex = 0; coefficientIndex != _coefficientCount; coefficientIndex++){
                 crrBestEvaluationCoefficients[coefficientIndex].value = newBest[coefficientIndex];
+                crrBestEvaluationCoefficients[coefficientIndex].changes += ROUNDS;
             }
 
             SerializeEvaluationCoefficients(crrBestEvaluationCoefficients);
         }
     }
 
-    private static float[] Train(int rounds, Coefficient[] crrBestEvaluationCoefficients) throws InterruptedException, ExecutionException {
+    private static float[] Train(Coefficient[] crrBestEvaluationCoefficients) throws InterruptedException, ExecutionException {
 
         _coefficientCount = crrBestEvaluationCoefficients.length;
 
@@ -56,8 +57,7 @@ public class Trainingscenter {
             }
         }
 
-
-        for(var round = 0; round != rounds; round++){
+        for(var round = 0; round != ROUNDS; round++){
 
             ShuffleArray(evaluationCoefficientsMap);
 
@@ -68,15 +68,18 @@ public class Trainingscenter {
                 }
             }
 
-
             float[][] results = StartGames(PARALLEL_GAME_COUNT, evaluationCoefficientsValuesMap.clone());
-
-            if(evaluationCoefficientsValuesMap[0][0] == 1f)
-                Utilities.Log("TEST");
 
             for(var game = 0; game != PARALLEL_GAME_COUNT; game++){
 
                 var winner = results[game];
+
+                if(winner.length == 0)
+                    continue;
+
+                while(winner.length != _coefficientCount){
+                    winner = results[RANDOM.nextInt(0, winner.length)];
+                }
 
                 for(var client = 0; client != CLIENT_COUNT_PER_GAME; client++){
 
@@ -108,15 +111,21 @@ public class Trainingscenter {
             }
         }
 
-        return KnockOutTournament(winnerValues)[0];
+        return KnockOutTournament(new ArrayList<>(Arrays.asList(winnerValues)))[0];
     }
 
-    private static float[][] KnockOutTournament(float[][] participantEvaluationCoefficientsMap) throws ExecutionException, InterruptedException {
-        var participantAmount = participantEvaluationCoefficientsMap.length;
+    private static float[][] KnockOutTournament(ArrayList<float[]> participantEvaluationCoefficientsMap) throws ExecutionException, InterruptedException {
+        for(var i = participantEvaluationCoefficientsMap.size() - 1; i >= 0; i--){
+            var participantEvaluationCoefficients = participantEvaluationCoefficientsMap.get(i);
+            if(participantEvaluationCoefficients.length != _coefficientCount)
+                participantEvaluationCoefficientsMap.remove(i);
+        }
+
+        var participantAmount = participantEvaluationCoefficientsMap.size();
 
         if(participantAmount == 1)
             return new float[][]{
-                    participantEvaluationCoefficientsMap[0]
+                    participantEvaluationCoefficientsMap.get(0)
             };
 
         var clientAmount = ((participantAmount + CLIENT_COUNT_PER_GAME - 1) / CLIENT_COUNT_PER_GAME) * CLIENT_COUNT_PER_GAME;
@@ -125,18 +134,18 @@ public class Trainingscenter {
 
         var clientIndex = 0;
         while(clientIndex < participantAmount){
-            newParticipantEvaluationCoefficientsMap[clientIndex] = participantEvaluationCoefficientsMap[clientIndex];
+            newParticipantEvaluationCoefficientsMap[clientIndex] = participantEvaluationCoefficientsMap.get(clientIndex);
             clientIndex++;
         }
         while(clientIndex < clientAmount){
-            newParticipantEvaluationCoefficientsMap[clientIndex] = GetRandomElement(participantEvaluationCoefficientsMap);
+            newParticipantEvaluationCoefficientsMap[clientIndex] = (float[]) GetRandomElement(participantEvaluationCoefficientsMap.toArray());
             clientIndex++;
         }
 
         ShuffleArray(newParticipantEvaluationCoefficientsMap);
 
         var roundResult = StartGames(clientAmount / CLIENT_COUNT_PER_GAME, newParticipantEvaluationCoefficientsMap);
-        return KnockOutTournament(roundResult);
+        return KnockOutTournament(new ArrayList<>(Arrays.asList(roundResult)));
     }
 
     private static float[][] StartGames(int gamesAmount, float[][] evaluationCoefficientsValuesMap) throws ExecutionException, InterruptedException {
@@ -176,7 +185,7 @@ public class Trainingscenter {
     }
 
     private static float[] StartGame(int index, float[][] clientEvaluationCoefficients){
-        ExecutorService executor = Executors.newFixedThreadPool(CLIENT_COUNT_PER_GAME);
+        var executor = Executors.newFixedThreadPool(CLIENT_COUNT_PER_GAME);
         var playerNumbers = new Integer[CLIENT_COUNT_PER_GAME];
 
         var port = FREE_PORT_START_INDEX + index;
@@ -194,16 +203,37 @@ public class Trainingscenter {
 
         executor.shutdown();
 
-        var winner = Server.runOnceAndReturnTheWinner(8, port);
+        var serverExecutor = Executors.newSingleThreadExecutor();
+        Future<Integer> future = serverExecutor.submit(() -> Server.runOnceAndReturnTheWinner(8, port));
 
-        executor.shutdownNow();
-        var winnerIndex = -1;
-        for(var i = 0; i != 3; i++){
-            if(playerNumbers[i] == winner-1)
-                winnerIndex = i;
+        try {
+            var winner = future.get(GAME_TIMEOUT_TIME, TimeUnit.SECONDS);
+
+            var winnerIndex = -1;
+            for(var i = 0; i != 3; i++){
+                if(playerNumbers[i] == winner-1)
+                    winnerIndex = i;
+            }
+
+            if(winnerIndex == -1)
+                return new float[]{};
+
+            return clientEvaluationCoefficients[winnerIndex];
+
+        } catch (TimeoutException e) {
+            future.cancel(true);
+            Utilities.Log(
+                    "-----------------------------------------\n\n\n\n" +
+                          "                     TIME               \n\n\n\n" +
+                          "-----------------------------------------");
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
         }
 
-        return clientEvaluationCoefficients[winnerIndex];
+        serverExecutor.shutdown();
+        executor.shutdownNow();
+
+        return new float[]{};
     }
 
     private static void StartClient(int port, float[] evaluationCoefficients, Integer[] playerNumber, int index) throws InterruptedException, IOException {
@@ -224,43 +254,13 @@ public class Trainingscenter {
     }
 
     public static float MutateFloat(float currentValue, int numMutations) {
-        var deviationSign = (RANDOM.nextFloat() > 0.5f)? -1 : 1;
-        var deviationMutationCountFactor = (1f/(numMutations + 1));
-        var deviation = deviationSign * currentValue * deviationMutationCountFactor;
-        deviation = DeviationHelper(currentValue, deviation) * deviationSign;
+        var deviationBase = (RANDOM.nextFloat() - 0.5f) * (2 * Math.max(0, Math.min(1, LEARNING_RATE)));
+        float deviation = currentValue * deviationBase/numMutations;
         var result = currentValue + deviation;
-
-        if (result < 0) {
-            result = 0;
-        }
-
         return result;
     }
 
-    private static float DeviationHelper(float value, float deviation){
-        var newDeviation = EvaluateMyEquation(value * 2, value, value + deviation);
-        newDeviation = Math.max(Math.min(newDeviation, value), 0);
-        return newDeviation;
-    }
-
-    private static float EvaluateLinearEquation(float p2x, float p2y, float x){
-        var slope = (p2y - 0)/(p2x - 0);
-        var result = slope * x;
-        return result;
-    }
-
-    private static float EvaluateMyEquation(float p2x, float p2y, float x){
-        return p2y * CalculateMyEquation(x / p2x);
-    }
-
-    private static float CalculateMyEquation(float x){
-        var numerator = x / (1f - x);
-        var logarithm = Math.log(numerator);
-        var result = (float) logarithm / 12f + 0.5f;
-        return result;
-    }
-
-    private static Coefficient[] DeserializeEvaluationCoefficients() {
+    public static Coefficient[] DeserializeEvaluationCoefficients() {
         var path = "src/Assets/EvaluationCoefficientsMap.ser";
         Coefficient[] coefficients;
         try {

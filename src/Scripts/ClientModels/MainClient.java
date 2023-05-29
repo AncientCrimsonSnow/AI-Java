@@ -2,7 +2,8 @@ package Scripts.ClientModels;
 
 import AStart.AStarAlgorithm;
 import Utilities.Board;
-import Utilities.Utilities;
+import Utilities.Trainingscenter;
+import Utilities.*;
 import lenz.htw.loki.Move;
 
 import java.util.Random;
@@ -17,7 +18,12 @@ public class MainClient {
         Utilities.Log(playerNumber);
 
         _board = new Board(playerNumber);
-        _evaluationCoefficients = new float []{20 * random.nextFloat(), 20 * random.nextFloat(), 1 * random.nextFloat(), 1 * random.nextFloat()};
+
+        _evaluationCoefficients = new float [4];
+        var crrBestEvaluationCoefficients = Trainingscenter.DeserializeEvaluationCoefficients();
+        for (var i = 0; i != crrBestEvaluationCoefficients.length; i++) {
+            _evaluationCoefficients[i] = crrBestEvaluationCoefficients[i].value;
+        }
     }
 
     public MainClient(int playerNumber, float[] evaluationCoefficients) {
@@ -34,7 +40,7 @@ public class MainClient {
     }
 
     public void PrintBoard(){
-        Utilities.Log(_board.GetBoard());
+        //Utilities.Log(_board.GetBoard());
     }
 
     private static int GetDistance(int index0, int index1){
