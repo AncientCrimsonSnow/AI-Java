@@ -7,7 +7,8 @@
     <list default="true" id="466d7ca1-e518-406b-97e3-57fce278f640" name="Changes" comment="Mutation Improve">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Scripts/ClientModels/MainClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Scripts/ClientModels/MainClient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Utilities/Trainingscenter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Utilities/Trainingscenter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Utilities/Board.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Utilities/Board.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Utilities/ClientStarter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Utilities/ClientStarter.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -56,8 +57,8 @@
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;preferences.keymap&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
@@ -68,7 +69,7 @@
       <recent name="H:\Documents\AI\AI-Java\Scripts" />
     </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="JAR Application.ServerStartHome">
     <configuration name="Clients" type="Application" factoryName="Application" singleton="false">
       <option name="MAIN_CLASS_NAME" value="Utilities.ClientStarter" />
       <module name="AI-Java" />
@@ -148,6 +149,22 @@
       <workItem from="1685183890408" duration="10995000" />
       <workItem from="1685212498059" duration="7921000" />
       <workItem from="1685265787356" duration="4571000" />
+      <workItem from="1685350132759" duration="159000" />
+      <workItem from="1686323527230" duration="3000" />
+      <workItem from="1686651443505" duration="596000" />
+      <workItem from="1686657138017" duration="2000" />
+      <workItem from="1687127190486" duration="3000" />
+      <workItem from="1687379131764" duration="3000" />
+      <workItem from="1687379560016" duration="1000" />
+      <workItem from="1687721530483" duration="269000" />
+      <workItem from="1687777025026" duration="247000" />
+      <workItem from="1687777386207" duration="274000" />
+      <workItem from="1687777692512" duration="3892000" />
+      <workItem from="1688469651674" duration="613000" />
+      <workItem from="1688549296300" duration="595000" />
+      <workItem from="1691840601014" duration="10210000" />
+      <workItem from="1691875573288" duration="6169000" />
+      <workItem from="1691933004978" duration="1192000" />
     </task>
     <task id="LOCAL-00001" summary="Adding some basics">
       <created>1681919191419</created>
@@ -198,7 +215,14 @@
       <option name="project" value="LOCAL" />
       <updated>1684843547872</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="Mutation Improve">
+      <created>1685350224418</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1685350224418</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -224,17 +248,6 @@
     <MESSAGE value="AlphaBeta" />
     <MESSAGE value="Mutation Improve" />
     <option name="LAST_COMMIT_MESSAGE" value="Mutation Improve" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/Utilities/Trainingscenter.java</url>
-          <line>33</line>
-          <option name="timeStamp" value="103" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/AI_Java$ServerStartHome.ic" NAME="ServerStartHome Coverage Results" MODIFIED="1682023519925" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />

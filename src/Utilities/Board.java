@@ -200,10 +200,10 @@ public class Board {
                         }
                     }
                     else if(neighboursValue == 2){
-                        EvaluateEnemiesTile(result, myTileIndex, neighboursIndex);
+                        GetAttackingMoves(result, myTileIndex, neighboursIndex);
                     }
                     else if(neighboursValue == 3){
-                        EvaluateEnemiesTile(result, myTileIndex, neighboursIndex);
+                        GetAttackingMoves(result, myTileIndex, neighboursIndex);
                     }
                 }
             }
@@ -229,7 +229,7 @@ public class Board {
         return n1 != n2;
     }
 
-    private void EvaluateEnemiesTile(ArrayList<Move> result, byte myTileIndex, byte index) {
+    private void GetAttackingMoves(ArrayList<Move> result, byte myTileIndex, byte index) {
         var myTilesCount = 0;
 
         var freeSpacesIndices = new ArrayList<Byte>();
@@ -261,7 +261,10 @@ public class Board {
 
     public Move GetBestMove(int depth, float[] evaluationCoefficients){
         var move = AlphaBetaSearch.GetBestMove(_board, depth, evaluationCoefficients);
-        var result = new Move(_perspectiveMapOut[move.from], _perspectiveMapOut[move.to], (move.push >= TILE_COUNT)? 255 : _perspectiveMapOut[move.push]);
+        var result = new Move(
+                _perspectiveMapOut[move.from],
+                _perspectiveMapOut[move.to],
+                (move.push >= TILE_COUNT)? 255 : _perspectiveMapOut[move.push]);
         return result;
     }
 

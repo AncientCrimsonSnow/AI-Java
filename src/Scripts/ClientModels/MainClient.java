@@ -47,6 +47,4 @@ public class MainClient {
         var aStar = new AStarAlgorithm();
         return aStar.GetPathLength(index0, index1);
     }
-
-
 }

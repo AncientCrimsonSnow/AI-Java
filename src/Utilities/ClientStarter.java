@@ -8,7 +8,6 @@ import java.io.IOException;
 
 public class ClientStarter {
     public static void main(String[] args) throws IOException {
-
         var networkClient = new NetworkClient(null, "Ahegoe", Utilities.GetLogo());
         var clientModel = new MainClient(networkClient.getMyPlayerNumber());
         Move receiveMove;
