@@ -1,5 +1,5 @@
 # GT1_AI-To-solve-Roundbased-board-Game
-This repository contains the practical part of the Game Technologies 1 (GT1) course
+This repository contains the practical part of the Game Technologies 1 (GT1) course M.Sc..
 
 ## Project Overview
 This repository implements an AI for a turn-based board game developed in Java. The AI applies strategic decision-making algorithms to compete effectively in the game.
